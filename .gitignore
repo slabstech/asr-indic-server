@@ -5,6 +5,7 @@ __pycache__/
 venv_new/
 NeMo/
 asr_venv
+*.nemo
 # C extensions
 *.so
 
