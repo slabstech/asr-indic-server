@@ -99,3 +99,22 @@ uvicorn asr_indic_server/asr_api:app --host 0.0.0.0 --port 8000 --MODEL ARTPARK-
 ---
 
 This README provides a comprehensive guide to setting up and running the Indic Translate Server. For more details, refer to the linked resources.
+
+-- Indic Conformer
+- git clone https://github.com/AI4Bharat/NeMo.git && cd NeMo && git checkout nemo-v2 && bash reinstall.sh
+
+
+  - pip3.12 install --no-cache-dir --no-deps pip install git+https://github.com/AI4Bharat/NeMo.git@nemo-v2
+
+
+ - IndicConformer Collection - https://huggingface.co/collections/ai4bharat/indicconformer-66d9e933a243cba4b679cb7f
+  - Download models 
+    - kannada - huggingface-cli download ai4bharat/indicconformer_stt_kn_hybrid_ctc_rnnt_large
+    - Malayalam - ai4bharat/indicconformer_stt_ml_hybrid_ctc_rnnt_large
+    - Hindi - ai4bharat/indicconformer_stt_hi_hybrid_ctc_rnnt_large
+    
+  - https://github.com/AI4Bharat/IndicConformerASR
+
+  - nemo model - kannada- https://objectstore.e2enetworks.net/indic-asr-public/indicConformer/ai4b_indicConformer_kn.nemo
+
+  wget https://objectstore.e2enetworks.net/indic-asr-public/indicConformer/ai4b_indicConformer_kn.nemo -O kannada.nemo
