@@ -11,9 +11,9 @@ model.eval() # inference mode
 model = model.to(device)
 
 model.cur_decoder = "ctc"
-ctc_text = model.transcribe(['sample_audio_infer_ready.wav'], batch_size=1, logprobs=False, language_id=lang_id)[0]
+ctc_text = model.transcribe(['kannada_query_infer.wav'], batch_size=1, logprobs=False, language_id=lang_id)[0]
 print(ctc_text)
 
 model.cur_decoder = "rnnt"
-ctc_text = model.transcribe(['sample_audio_infer_ready.wav'], batch_size=1, logprobs=False, language_id=lang_id)[0]
+ctc_text = model.transcribe(['kannada_query_infer.wav'], batch_size=1, logprobs=False, language_id=lang_id)[0]
 print(ctc_text)
