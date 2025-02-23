@@ -1,7 +1,7 @@
 FROM pytorch/pytorch:2.6.0-cuda12.6-cudnn9-runtime
 # hadolint ignore=DL3008,DL3015,DL4006
 RUN apt-get update && \
-    apt-get install -y git curl software-properties-common && \
+    apt-get install -y git curl software-properties-common ffmpeg && \
     add-apt-repository ppa:deadsnakes/ppa && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y python3.12 python3-distutils && \
