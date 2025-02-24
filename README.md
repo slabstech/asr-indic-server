@@ -128,7 +128,7 @@ huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_ctc_rnnt_large
 Run the server using FastAPI with the desired language (e.g., Kannada):
 
 ```bash
-uvicorn asr_indic_server/asr_api:app --host 0.0.0.0 --port 8000 --language kannada
+uvicorn src.asr_indic_server.asr_api:app --reload
 ```
 
 ## Building Docker Image

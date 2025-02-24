@@ -81,4 +81,4 @@ async def transcribe_audio(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 # To run the server, use the following command:
-# uvicorn src.asr_indic_server.asr:app --reload
+# uvicorn src.asr_indic_server.asr_api:app --reload
