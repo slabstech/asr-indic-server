@@ -8,11 +8,7 @@ import os
 import tempfile
 import subprocess
 
-app = FastAPI(
-    openapi_prefix="/",
-    openapi_url="/openapi.json",
-    docs_url="/"
-)
+app = FastAPI()
 
 # Load and prepare the model
 try:

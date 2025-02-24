@@ -4,6 +4,7 @@ sudo apt-get upgrade
 sudo apt-get install -y python3-venv
 sudo apt-get install -y python3-pip
 sudo apt-get install -y ffmpeg
+sudo apt install net-tools
 
 
 python3 -m venv venv
