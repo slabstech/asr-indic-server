@@ -4,6 +4,7 @@
 Automatic Speech Recognition (ASR) for Indian languages using IndicConformer models. The default model is set to Kannada ASR.
 
 ## Table of Contents
+- [Supported Languages](#supported-languages)
 - [Getting Started](#getting-started)
 - [For Production (Docker)](#for-production-docker)
 - [For Development (Local)](#for-development-local)
@@ -15,6 +16,31 @@ Automatic Speech Recognition (ASR) for Indian languages using IndicConformer mod
 - [Troubleshooting](#troubleshooting)
 - [References](#references)
 - [Additional Resources](#additional-resources)
+
+## Supported Languages - 22
+
+- Assamese (`as`)
+- Bengali (`bn`)
+- Bodo (`brx`)
+- Dogri (`doi`)
+- Gujarati (`gu`)
+- Hindi (`hi`)
+- Kannada (`kn`)
+- Kashmiri (`ks`)
+- Konkani (`kok`)
+- Maithili (`mai`)
+- Malayalam (`ml`)
+- Manipuri (`mni`)
+- Marathi (`mr`)
+- Nepali (`ne`)
+- Odia (`or`)
+- Punjabi (`pa`)
+- Sanskrit (`sa`)
+- Santali (`sat`)
+- Sindhi (`sd`)
+- Tamil (`ta`)
+- Telugu (`te`)
+- Urdu (`ur`)
 
 ## Getting Started
 
@@ -183,9 +209,9 @@ ffmpeg -i sample_audio.wav -ac 1 -ar 16000 sample_audio_infer_ready.wav -y
 - **Port conflicts**: Ensure port 8000 is free when running the FastAPI server.
 
 ## References
-- [AI4Bharat IndicConformerASR GitHub Repository](#)
-- [Nemo Model - Kannada](#)
-- [IndicConformer Collection on HuggingFace](#)
+- [AI4Bharat IndicConformerASR GitHub Repository](https://github.com/AI4Bharat/IndicConformerASR)
+- [Nemo - AI4Bharat](https://github.com/AI4Bharat/NeMo)
+- [IndicConformer Collection on HuggingFace](https://huggingface.co/collections/ai4bharat/indicconformer-66d9e933a243cba4b679cb7f)
 
 ## Additional Resources
 

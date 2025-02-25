@@ -1,6 +1,6 @@
 import torch
 import nemo.collections.asr as nemo_asr
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, Query
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from pydub import AudioSegment
@@ -26,12 +26,50 @@ logging.basicConfig(
 
 app = FastAPI()
 
-# Load and prepare the model
-try:
-    model = nemo_asr.models.ASRModel.from_pretrained("ai4bharat/indicconformer_stt_kn_hybrid_rnnt_large")
+
+def load_model(language_id="kn"):
+    model_name = config_models.get(language_id, config_models[default_language])
+    model = nemo_asr.models.ASRModel.from_pretrained(model_name)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.freeze() # inference mode
     model = model.to(device) # transfer model to device
+
+    return model
+# Load and prepare the model
+try:
+    model_language = {
+        "kannada": "kn",
+        "hindi" : "hi",
+        "malayalam" : "ml",
+        }
+    
+    config_models = {
+        "as": "ai4bharat/indicconformer_stt_as_hybrid_ctc_rnnt_large",
+        "bn": "ai4bharat/indicconformer_stt_bn_hybrid_ctc_rnnt_large",
+        "brx": "ai4bharat/indicconformer_stt_brx_hybrid_ctc_rnnt_large",
+        "doi": "ai4bharat/indicconformer_stt_doi_hybrid_ctc_rnnt_large",
+        "gu": "ai4bharat/indicconformer_stt_gu_hybrid_ctc_rnnt_large",
+        "hi": "ai4bharat/indicconformer_stt_hi_hybrid_ctc_rnnt_large",
+        "kn": "ai4bharat/indicconformer_stt_kn_hybrid_ctc_rnnt_large",
+        "ks": "ai4bharat/indicconformer_stt_ks_hybrid_ctc_rnnt_large",
+        "kok": "ai4bharat/indicconformer_stt_kok_hybrid_ctc_rnnt_large",
+        "mai": "ai4bharat/indicconformer_stt_mai_hybrid_ctc_rnnt_large",
+        "ml": "ai4bharat/indicconformer_stt_ml_hybrid_ctc_rnnt_large",
+        "mni": "ai4bharat/indicconformer_stt_mni_hybrid_ctc_rnnt_large",
+        "mr": "ai4bharat/indicconformer_stt_mr_hybrid_ctc_rnnt_large",
+        "ne": "ai4bharat/indicconformer_stt_ne_hybrid_ctc_rnnt_large",
+        "or": "ai4bharat/indicconformer_stt_or_hybrid_ctc_rnnt_large",
+        "pa": "ai4bharat/indicconformer_stt_pa_hybrid_ctc_rnnt_large",
+        "sa": "ai4bharat/indicconformer_stt_sa_hybrid_ctc_rnnt_large",
+        "sat": "ai4bharat/indicconformer_stt_sat_hybrid_ctc_rnnt_large",
+        "sd": "ai4bharat/indicconformer_stt_sd_hybrid_ctc_rnnt_large",
+        "ta": "ai4bharat/indicconformer_stt_ta_hybrid_ctc_rnnt_large",
+        "te": "ai4bharat/indicconformer_stt_te_hybrid_ctc_rnnt_large",
+        "ur": "ai4bharat/indicconformer_stt_ur_hybrid_ctc_rnnt_large"
+    }
+
+    default_language = "kn"
+    model = load_model(default_language)
 except Exception as e:
     logging.error(f"Failed to load model: {str(e)}")
     raise HTTPException(status_code=500, detail=f"Failed to load model: {str(e)}")
@@ -83,7 +121,7 @@ def split_audio(file_path, chunk_duration_ms=15000):
         return [file_path]
 
 @app.post("/transcribe/", response_model=TranscriptionResponse)
-async def transcribe_audio(file: UploadFile = File(...)):
+async def transcribe_audio(file: UploadFile = File(...), language: str = Query(..., enum=model_language)):
     start_time = time()
     try:
         # Check file extension
@@ -119,7 +157,13 @@ async def transcribe_audio(file: UploadFile = File(...)):
         try:
             # Transcribe the audio
             model.cur_decoder = "rnnt"
-            rnnt_texts = model.transcribe(chunk_file_paths, batch_size=1, language_id='kn')
+            language_id = language.split(',')[1]
+
+            if(language_id != default_language):
+                model = load_model(language_id)
+                default_language = language_id
+
+            rnnt_texts = model.transcribe(chunk_file_paths, batch_size=1, language_id=language_id)
 
             # Flatten the list of transcriptions
             rnnt_text = " ".join([text for sublist in rnnt_texts for text in sublist])
@@ -146,7 +190,7 @@ async def transcribe_audio(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 @app.post("/transcribe_batch/", response_model=BatchTranscriptionResponse)
-async def transcribe_audio_batch(files: List[UploadFile] = File(...)):
+async def transcribe_audio_batch(files: List[UploadFile] = File(...), language: str = Query(..., enum=model_language)):
     start_time = time()
     tmp_file_paths = []
     transcriptions = []
@@ -187,7 +231,14 @@ async def transcribe_audio_batch(files: List[UploadFile] = File(...)):
         try:
             # Transcribe the audio files in batch
             model.cur_decoder = "rnnt"
-            rnnt_texts = model.transcribe(tmp_file_paths, batch_size=len(files), language_id='kn')
+
+            language_id = language.split(',')[1]
+
+            if(language_id != default_language):
+                model = load_model(language_id)
+                default_language = language_id
+
+            rnnt_texts = model.transcribe(tmp_file_paths, batch_size=len(files), language_id=language_id)
             logging.info(f"Raw transcriptions from model: {rnnt_texts}")
             end_time = time()
             logging.info(f"Transcription completed in {end_time - start_time:.2f} seconds")
