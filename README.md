@@ -116,7 +116,7 @@ huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_rnnt_large
 ## Running with FastAPI Server
 Run the server using FastAPI with the desired language (e.g., Kannada):
 ```bash
-python src/asr_indic_server/asr_api.py --port 8000 --language kn --host 0.0.0.0
+python src/asr_api.py --port 8000 --language kn --host 0.0.0.0
 ```
 
 

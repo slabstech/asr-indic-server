@@ -25,8 +25,8 @@ ENV PYTHONPATH=/root/asr_indic_server/src
 ENV UVICORN_HOST=0.0.0.0
 ENV UVICORN_PORT=7860
 
-
-CMD ["python","src/asr_indic_server/asr_api.py"]
+RUN cd src/
+CMD ["python","asr_api.py"]
 
 # Run the application
 #CMD ["uvicorn", "asr_indic_server.asr_api:app", "--host", "0.0.0.0", "--port", "8000"]

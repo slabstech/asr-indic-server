@@ -13,6 +13,5 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 #cd src/asr_indic_server
-python src/asr_indic_server/asr_api.py
-#uvicorn src.asr_indic_server.asr_api:app --reload
+python src/asr_api.py
 
