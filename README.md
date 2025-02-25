@@ -28,30 +28,30 @@ Watch a quick demo of our project in action! Click the image below to view the v
 - [Additional Resources](#additional-resources)
 
 ## Supported Languages - 22
-
-- Assamese (`as`)
-- Bengali (`bn`)
-- Bodo (`brx`)
-- Dogri (`doi`)
-- Gujarati (`gu`)
-- Hindi (`hi`)
-- Kannada (`kn`)
-- Kashmiri (`ks`)
-- Konkani (`kok`)
-- Maithili (`mai`)
-- Malayalam (`ml`)
-- Manipuri (`mni`)
-- Marathi (`mr`)
-- Nepali (`ne`)
-- Odia (`or`)
-- Punjabi (`pa`)
-- Sanskrit (`sa`)
-- Santali (`sat`)
-- Sindhi (`sd`)
-- Tamil (`ta`)
-- Telugu (`te`)
-- Urdu (`ur`)
-
+| Language      | Code  |
+|---------------|-------|
+| Assamese      | `as`  |
+| Bengali       | `bn`  |
+| Bodo          | `brx` |
+| Dogri         | `doi` |
+| Gujarati      | `gu`  |
+| Hindi         | `hi`  |
+| Kannada       | `kn`  |
+| Kashmiri      | `ks`  |
+| Konkani       | `kok` |
+| Maithili      | `mai` |
+| Malayalam     | `ml`  |
+| Manipuri      | `mni` |
+| Marathi       | `mr`  |
+| Nepali        | `ne`  |
+| Odia          | `or`  |
+| Punjabi       | `pa`  |
+| Sanskrit      | `sa`  |
+| Santali       | `sat` |
+| Sindhi        | `sd`  |
+| Tamil         | `ta`  |
+| Telugu        | `te`  |
+| Urdu          | `ur`  |
 
 ## Getting Started
 
@@ -98,25 +98,25 @@ Models can be downloaded from AI4Bharat's HuggingFace repository:
 
 ### Kannada
 ```bash
-huggingface-cli download ai4bharat/indicconformer_stt_kn_hybrid_ctc_rnnt_large
+huggingface-cli download ai4bharat/indicconformer_stt_kn_hybrid_rnnt_large
 ```
 
 ### Other Languages
 
 #### Malayalam
 ```bash
-huggingface-cli download ai4bharat/indicconformer_stt_ml_hybrid_ctc_rnnt_large
+huggingface-cli download ai4bharat/indicconformer_stt_ml_hybrid_rnnt_large
 ```
 
 #### Hindi
 ```bash
-huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_ctc_rnnt_large
+huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_rnnt_large
 ```
 
 ## Running with FastAPI Server
 Run the server using FastAPI with the desired language (e.g., Kannada):
 ```bash
-python src/asr_indic_server/asr_api.py --port 8000 --language kn --host 127.0.0.1
+python src/asr_indic_server/asr_api.py --port 8000 --language kn --host 0.0.0.0
 ```
 
 

@@ -6,7 +6,7 @@ services:
     ports:
       - 8000:8000
     environment:
-      - LANGUAGE=kannada
+      - LANGUAGE=kn
     deploy:
       resources:
         reservations:
