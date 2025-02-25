@@ -124,7 +124,7 @@ curl -X 'POST' \
 'http://localhost:8000/transcribe/' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
--F 'file=@samples/kannada_sample_2.wav;type=audio/x-wav'
+-F 'file=@samples/kannada_sample_3.wav;type=audio/x-wav'
 ```
 - **Expected Output**: [kannada_sample_3_out.md](docs/kannada_sample_3_out.md)
 
@@ -190,7 +190,8 @@ huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_ctc_rnnt_large
 ## Running with FastAPI Server
 Run the server using FastAPI with the desired language (e.g., Kannada):
 ```bash
-python src/asr_indic_server/asr_api.py --port 8000 --language kn --host 127.0.0.1```
+python src/asr_indic_server/asr_api.py --port 8000 --language kn --host 127.0.0.1
+```
 
 ## Building Docker Image
 Build the Docker image locally:
