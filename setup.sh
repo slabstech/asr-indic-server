@@ -1,10 +1,10 @@
-sudo apt-get update
-sudo apt-get upgrade
+sudo apt-get update -y
+sudo apt-get upgrade -y
 
 sudo apt-get install -y python3-venv
 sudo apt-get install -y python3-pip
 sudo apt-get install -y ffmpeg
-sudo apt install net-tools
+sudo apt install net-tools -y
 
 
 python3 -m venv venv
@@ -12,5 +12,7 @@ source venv/bin/activate
 
 pip install -r requirements.txt
 
-uvicorn src.asr_indic_server.asr_api:app --reload
+#cd src/asr_indic_server
+python src/asr_indic_server/asr_api.py
+#uvicorn src.asr_indic_server.asr_api:app --reload
 

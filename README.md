@@ -3,7 +3,18 @@
 ## Overview
 Automatic Speech Recognition (ASR) for Indian languages using IndicConformer models. The default model is set to Kannada ASR.
 
+
+## Demo Video
+
+Watch a quick demo of our project in action! Click the image below to view the video on YouTube.
+
+<a href="https://youtu.be/F0Mo0zjyysM" target="_blank">
+  <img src="https://img.youtube.com/vi/F0Mo0zjyysM/0.jpg" alt="Watch the video">
+</a>
+
+
 ## Table of Contents
+- [Supported Languages](#supported-languages)
 - [Getting Started](#getting-started)
 - [For Production (Docker)](#for-production-docker)
 - [For Development (Local)](#for-development-local)
@@ -15,6 +26,32 @@ Automatic Speech Recognition (ASR) for Indian languages using IndicConformer mod
 - [Troubleshooting](#troubleshooting)
 - [References](#references)
 - [Additional Resources](#additional-resources)
+
+## Supported Languages - 22
+
+- Assamese (`as`)
+- Bengali (`bn`)
+- Bodo (`brx`)
+- Dogri (`doi`)
+- Gujarati (`gu`)
+- Hindi (`hi`)
+- Kannada (`kn`)
+- Kashmiri (`ks`)
+- Konkani (`kok`)
+- Maithili (`mai`)
+- Malayalam (`ml`)
+- Manipuri (`mni`)
+- Marathi (`mr`)
+- Nepali (`ne`)
+- Odia (`or`)
+- Punjabi (`pa`)
+- Sanskrit (`sa`)
+- Santali (`sat`)
+- Sindhi (`sd`)
+- Tamil (`ta`)
+- Telugu (`te`)
+- Urdu (`ur`)
+
 
 ## Getting Started
 
@@ -29,11 +66,11 @@ Automatic Speech Recognition (ASR) for Indian languages using IndicConformer mod
   Modify the `compose.yaml` file to set the desired language. Example configurations:
   - **Kannada**:
   ```yaml
-  language: kannada
+  language: kn
   ```
   - **Hindi**:
   ```yaml
-  language: hindi
+  language: hi
   ```
 
 ### For Development (Local)
@@ -63,57 +100,57 @@ You can evaluate the ASR transcription results using `curl` commands. Below are 
 ### Kannada Transcription Examples
 
 #### Sample 1: kannada_sample_1.wav
-- **Audio File**: [kannada_sample_1.wav](kannada_sample_1.wav)
+- **Audio File**: [samples/kannada_sample_1.wav](samples/kannada_sample_1.wav)
 - **Command**:
 ```bash
 curl -X 'POST' \
 'http://localhost:8000/transcribe/' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
--F 'file=@kannada_sample_1.wav;type=audio/x-wav'
+-F 'file=@samples/kannada_sample_1.wav;type=audio/x-wav'
 ```
 - **Expected Output**:
 ```ಕರ್ನಾಟಕದ ರಾಜಧಾನಿ ಯಾವುದು```
 Translation: "What is the capital of Karnataka"
 
 #### Sample 2: kannada_sample_2.wav
-- **Audio File**: [kannada_sample_2.wav](kannada_sample_2.wav)
+- **Audio File**: [samples/kannada_sample_2.wav](samples/kannada_sample_2.wav)
 - **Command**:
 ```bash
 curl -X 'POST' \
 'http://localhost:8000/transcribe/' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
--F 'file=@kannada_sample_2.wav;type=audio/x-wav'
+-F 'file=@samples/kannada_sample_2.wav;type=audio/x-wav'
 ```
 - **Expected Output**:
 ```ಬೆಂಗಳೂರು ಕರ್ನಾಟಕ ರಾಜ್ಯದ ರಾಜಧಾನಿ ಆಗಿದೆ ಕರ್ನಾಟಕದಲ್ಲಿ ನಾವು ಕನ್ನಡ ಮಾತನಾಡುತ್ತೇವೆ```
 
 #### Sample 3 - Song - 4 minutes
 - [YT Video- Navaduva Nudiye](https://www.youtube.com/watch?v=LuZzhMN8ndQ)
-- **Audio File**: [kannada_sample_3.wav](kannada_sample_3.wav)
+- **Audio File**: [samples/kannada_sample_3.wav](samples/kannada_sample_3.wav)
 - **Command**:
 ```bash
 curl -X 'POST' \
 'http://localhost:8000/transcribe/' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
--F 'file=@kannada_sample_2.wav;type=audio/x-wav'
+-F 'file=@samples/kannada_sample_3.wav;type=audio/x-wav'
 ```
-- **Expected Output**: [kannada_sample_1_out.md](kannada_sample_1_out.md)
+- **Expected Output**: [kannada_sample_3_out.md](docs/kannada_sample_3_out.md)
 
 #### Sample 4 - Song - 6.4 minutes
 - [YT Video- Aagadu Yendu](https://www.youtube.com/watch?v=-Oryie1c-gs)
-- **Audio File**: [kannada_sample_4.wav](kannada_sample_4.wav)
+- **Audio File**: [samples/kannada_sample_4.wav](samples/kannada_sample_4.wav)
 - **Command**:
 ```bash
 curl -X 'POST' \
 'http://localhost:8000/transcribe/' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
--F 'file=@kannada_sample_2.wav;type=audio/x-wav'
+-F 'file=@samples/kannada_sample_4.wav;type=audio/x-wav'
 ```
-- **Expected Output**: [kannada_sample_2_out.md](kannada_sample_2_out.md)
+- **Expected Output**: [kannada_sample_4_out.md](docs/kannada_sample_4_out.md)
 
 **Note**: The ASR does not provide sentence breaks or punctuation (e.g., question marks). We plan to integrate an LLM parser for improved context in future updates.
 
@@ -128,8 +165,8 @@ curl -X 'POST' \
 'http://localhost:8000/transcribe_batch/' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
--F 'files=@kannada_sample_1.wav;type=audio/x-wav' \
--F 'files=@kannada_sample_2.wav;type=audio/x-wav'
+-F 'files=@samples/kannada_sample_1.wav;type=audio/x-wav' \
+-F 'files=@samples/kannada_sample_2.wav;type=audio/x-wav'
 ```
 - **Expected Output**:
 ```json
@@ -164,7 +201,7 @@ huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_ctc_rnnt_large
 ## Running with FastAPI Server
 Run the server using FastAPI with the desired language (e.g., Kannada):
 ```bash
-uvicorn src.asr_indic_server.asr_api:app --reload
+python src/asr_indic_server/asr_api.py --port 8000 --language kn --host 127.0.0.1
 ```
 
 ## Building Docker Image
@@ -183,9 +220,9 @@ ffmpeg -i sample_audio.wav -ac 1 -ar 16000 sample_audio_infer_ready.wav -y
 - **Port conflicts**: Ensure port 8000 is free when running the FastAPI server.
 
 ## References
-- [AI4Bharat IndicConformerASR GitHub Repository](#)
-- [Nemo Model - Kannada](#)
-- [IndicConformer Collection on HuggingFace](#)
+- [AI4Bharat IndicConformerASR GitHub Repository](https://github.com/AI4Bharat/IndicConformerASR)
+- [Nemo - AI4Bharat](https://github.com/AI4Bharat/NeMo)
+- [IndicConformer Collection on HuggingFace](https://huggingface.co/collections/ai4bharat/indicconformer-66d9e933a243cba4b679cb7f)
 
 ## Additional Resources
 
@@ -208,13 +245,3 @@ python nemo_asr.py
 python hf_asr.py
 ```
 
-This README provides a comprehensive guide to setting up and running the ASR Indic Server. For more details, refer to the linked resources.
-```
-
-### Changes Made:
-
-1. **Added `/transcribe_batch` Endpoint Documentation**:
-   - Included a section describing the `/transcribe_batch` endpoint, explaining its purpose and providing an example `curl` command for batch transcription.
-
-2. **Updated Examples**:
-   - Provided an example output for the batch transcription endpoint.
