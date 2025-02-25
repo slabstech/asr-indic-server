@@ -18,10 +18,10 @@ Watch a quick demo of our project in action! Click the image below to view the v
 - [Getting Started](#getting-started)
 - [For Production (Docker)](#for-production-docker)
 - [For Development (Local)](#for-development-local)
-- [Evaluating Results](#evaluating-results)
-- [Kannada Transcription Examples](#kannada-transcription-examples)
 - [Downloading Translation Models](#downloading-translation-models)
 - [Running with FastAPI Server](#running-with-fastapi-server)
+- [Evaluating Results](#evaluating-results)
+- [Kannada Transcription Examples](#kannada-transcription-examples)
 - [Building Docker Image](#building-docker-image)
 - [Troubleshooting](#troubleshooting)
 - [References](#references)
@@ -92,6 +92,33 @@ Watch a quick demo of our project in action! Click the image below to view the v
   ```bash
   pip install -r requirements.txt
   ```
+
+## Downloading Translation Models
+Models can be downloaded from AI4Bharat's HuggingFace repository:
+
+### Kannada
+```bash
+huggingface-cli download ai4bharat/indicconformer_stt_kn_hybrid_ctc_rnnt_large
+```
+
+### Other Languages
+
+#### Malayalam
+```bash
+huggingface-cli download ai4bharat/indicconformer_stt_ml_hybrid_ctc_rnnt_large
+```
+
+#### Hindi
+```bash
+huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_ctc_rnnt_large
+```
+
+## Running with FastAPI Server
+Run the server using FastAPI with the desired language (e.g., Kannada):
+```bash
+python src/asr_indic_server/asr_api.py --port 8000 --language kn --host 127.0.0.1
+```
+
 
 ## Evaluating Results
 You can evaluate the ASR transcription results using `curl` commands. Below are examples for Kannada audio samples.
@@ -176,32 +203,6 @@ curl -X 'POST' \
     "ಬೆಂಗಳೂರು ಕರ್ನಾಟಕ ರಾಜ್ಯದ ರಾಜಧಾನಿ ಆಗಿದೆ ಕರ್ನಾಟಕದಲ್ಲಿ ನಾವು ಕನ್ನಡ ಮಾತನಾಡುತ್ತೇವೆ"
   ]
 }
-```
-
-## Downloading Translation Models
-Models can be downloaded from AI4Bharat's HuggingFace repository:
-
-### Kannada
-```bash
-huggingface-cli download ai4bharat/indicconformer_stt_kn_hybrid_ctc_rnnt_large
-```
-
-### Other Languages
-
-#### Malayalam
-```bash
-huggingface-cli download ai4bharat/indicconformer_stt_ml_hybrid_ctc_rnnt_large
-```
-
-#### Hindi
-```bash
-huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_ctc_rnnt_large
-```
-
-## Running with FastAPI Server
-Run the server using FastAPI with the desired language (e.g., Kannada):
-```bash
-python src/asr_indic_server/asr_api.py --port 8000 --language kn --host 127.0.0.1
 ```
 
 ## Building Docker Image
