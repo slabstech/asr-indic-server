@@ -3,6 +3,16 @@
 ## Overview
 Automatic Speech Recognition (ASR) for Indian languages using IndicConformer models. The default model is set to Kannada ASR.
 
+
+## Demo Video
+
+Watch a quick demo of our project in action! Click the image below to view the video on YouTube.
+
+<a href="https://youtu.be/F0Mo0zjyysM" target="_blank">
+  <img src="https://img.youtube.com/vi/F0Mo0zjyysM/0.jpg" alt="Watch the video">
+</a>
+
+
 ## Table of Contents
 - [Supported Languages](#supported-languages)
 - [Getting Started](#getting-started)
@@ -41,20 +51,6 @@ Automatic Speech Recognition (ASR) for Indian languages using IndicConformer mod
 - Tamil (`ta`)
 - Telugu (`te`)
 - Urdu (`ur`)
-
-
--
-Demo Video
-
-
-<blockquote class="twitter-tweet" data-media-max-width="560"><p lang="ca" dir="ltr"> <a href="https://t.co/zTaoyPMJAJ">pic.twitter.com/zTaoyPMJAJ</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
-
-
-<a href="https://www.youtube.com/watch?v=KHK_jaB4D0g" target="_blank">
-  <img src="https://img.youtube.com/vi/KHK_jaB4D0g/0.jpg" alt="Watch the video">
-</a>
-
-
 
 
 ## Getting Started
