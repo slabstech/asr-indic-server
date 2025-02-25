@@ -42,6 +42,21 @@ Automatic Speech Recognition (ASR) for Indian languages using IndicConformer mod
 - Telugu (`te`)
 - Urdu (`ur`)
 
+
+-
+Demo Video
+
+
+<blockquote class="twitter-tweet" data-media-max-width="560"><p lang="ca" dir="ltr"> <a href="https://t.co/zTaoyPMJAJ">pic.twitter.com/zTaoyPMJAJ</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
+
+
+<a href="https://www.youtube.com/watch?v=KHK_jaB4D0g" target="_blank">
+  <img src="https://img.youtube.com/vi/KHK_jaB4D0g/0.jpg" alt="Watch the video">
+</a>
+
+
+
+
 ## Getting Started
 
 ### For Production (Docker)
