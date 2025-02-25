@@ -94,6 +94,15 @@ curl -X 'POST' \
   -F 'file=@kannada_sample_2.wav;type=audio/x-wav'
 ```
 
+Sample 3 - Song - 4 minutes
+  -   [YT Video- Navaduva Nudiye](https://www.youtube.com/watch?v=LuZzhMN8ndQ)
+  - **Audio File**: [kannada_sample_3.wav](kannada_sample_3.wav)
+
+Sample 4 - Song - 6.4 minutes
+- [YT Video- Aagadu Yendu](https://www.youtube.com/watch?v=-Oryie1c-gs)
+- **Audio File**: [kannada_sample_4.wav](kannada_sample_4.wav)
+
+
 - **Expected Output**:  
 ```ಬೆಂಗಳೂರು ಕರ್ನಾಟಕ ರಾಜ್ಯದ ರಾಜಧಾನಿ ಆಗಿದೆ ಕರ್ನಾಟಕದಲ್ಲಿ ನಾವು ಕನ್ನಡ ಮಾತನಾಡುತ್ತೇವೆ```
 
