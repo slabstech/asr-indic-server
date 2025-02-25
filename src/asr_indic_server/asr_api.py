@@ -7,6 +7,13 @@ from pydub import AudioSegment
 import os
 import tempfile
 import subprocess
+import asyncio
+import io
+import logging
+from time import time
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 app = FastAPI()
 
@@ -17,6 +24,7 @@ try:
     model.freeze()  # inference mode
     model = model.to(device)  # transfer model to device
 except Exception as e:
+    logging.error(f"Failed to load model: {str(e)}")
     raise HTTPException(status_code=500, detail=f"Failed to load model: {str(e)}")
 
 # Define the response model
@@ -25,50 +33,50 @@ class TranscriptionResponse(BaseModel):
 
 @app.post("/transcribe/", response_model=TranscriptionResponse)
 async def transcribe_audio(file: UploadFile = File(...)):
+    start_time = time()
     try:
         # Check file extension
         file_extension = file.filename.split(".")[-1].lower()
         if file_extension not in ["wav", "mp3"]:
+            logging.warning(f"Unsupported file format: {file_extension}")
             raise HTTPException(status_code=400, detail="Unsupported file format. Please upload a WAV or MP3 file.")
 
-        tmp_file_path = None
+        # Read the file content
+        file_content = await file.read()
+
+        # Convert MP3 to WAV if necessary
+        if file_extension == "mp3":
+            audio = AudioSegment.from_mp3(io.BytesIO(file_content))
+        else:
+            audio = AudioSegment.from_wav(io.BytesIO(file_content))
+
+        # Check the sample rate of the WAV file
+        sample_rate = audio.frame_rate
+
+        # Convert WAV to the required format using ffmpeg if necessary
+        if sample_rate != 16000:
+            audio = audio.set_frame_rate(16000).set_channels(1)
+
+        # Export the audio to a temporary WAV file
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_file:
+            audio.export(tmp_file.name, format="wav")
+            tmp_file_path = tmp_file.name
+
         try:
-            # Save the uploaded file to a temporary location
-            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{file_extension}") as tmp_file:
-                tmp_file.write(await file.read())
-                tmp_file_path = tmp_file.name
-
-            # Convert MP3 to WAV if necessary
-            if file_extension == "mp3":
-                audio = AudioSegment.from_mp3(tmp_file_path)
-                wav_file_path = tmp_file_path.replace(".mp3", ".wav")
-                audio.export(wav_file_path, format="wav")
-                os.remove(tmp_file_path)
-                tmp_file_path = wav_file_path
-
-            # Check the sample rate of the WAV file
-            audio = AudioSegment.from_wav(tmp_file_path)
-            sample_rate = audio.frame_rate
-
-            # Convert WAV to the required format using ffmpeg if necessary
-            if sample_rate != 16000:
-                converted_wav_path = tmp_file_path.replace(".wav", "_infer_ready.wav")
-                subprocess.run(
-                    ["ffmpeg", "-i", tmp_file_path, "-ac", "1", "-ar", "16000", converted_wav_path, "-y"],
-                    check=True
-                )
-                os.remove(tmp_file_path)
-                tmp_file_path = converted_wav_path
-
             # Transcribe the audio
             model.cur_decoder = "rnnt"
             rnnt_text = model.transcribe([tmp_file_path], batch_size=1, language_id='kn')[0]
 
+            end_time = time()
+            logging.info(f"Transcription completed in {end_time - start_time:.2f} seconds")
+
             return JSONResponse(content={"text": rnnt_text})
 
         except subprocess.CalledProcessError as e:
+            logging.error(f"FFmpeg conversion failed: {str(e)}")
             raise HTTPException(status_code=500, detail=f"FFmpeg conversion failed: {str(e)}")
         except Exception as e:
+            logging.error(f"An error occurred during processing: {str(e)}")
             raise HTTPException(status_code=500, detail=f"An error occurred during processing: {str(e)}")
         finally:
             # Clean up temporary file
@@ -76,8 +84,10 @@ async def transcribe_audio(file: UploadFile = File(...)):
                 os.remove(tmp_file_path)
 
     except HTTPException as e:
+        logging.error(f"HTTPException: {str(e)}")
         raise e
     except Exception as e:
+        logging.error(f"An unexpected error occurred: {str(e)}")
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 # To run the server, use the following command:
