@@ -1,6 +1,7 @@
 import torch
 import nemo.collections.asr as nemo_asr
 from fastapi import FastAPI, File, UploadFile, HTTPException, Query
+from fastapi.responses import RedirectResponse
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from pydub import AudioSegment
@@ -210,6 +211,11 @@ async def transcribe_audio(file: UploadFile = File(...), language: str = Query(.
         logging.error(f"An unexpected error occurred: {str(e)}")
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
+@app.get("/")
+async def home():
+    return RedirectResponse(url="/docs")
+
+
 @app.post("/transcribe_batch/", response_model=BatchTranscriptionResponse)
 async def transcribe_audio_batch(files: List[UploadFile] = File(...), language: str = Query(..., enum=list(asr_manager.model_language.keys()))):
     start_time = time()
@@ -291,7 +297,7 @@ async def transcribe_audio_batch(files: List[UploadFile] = File(...), language: 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run the FastAPI server for ASR.")
-    parser.add_argument("--port", type=int, default=8000, help="Port to run the server on.")
+    parser.add_argument("--port", type=int, default=8888, help="Port to run the server on.")
     parser.add_argument("--language", type=str, default="kn", help="Default language for the ASR model.")
     parser.add_argument("--host", type=str, default="127.0.0.1", help="Host to run the server on.")
     args = parser.parse_args()
