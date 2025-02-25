@@ -120,7 +120,10 @@ async def transcribe_audio(file: UploadFile = File(...)):
             # Transcribe the audio
             model.cur_decoder = "rnnt"
             rnnt_texts = model.transcribe(chunk_file_paths, batch_size=1, language_id='kn')
-            rnnt_text = " ".join(rnnt_texts)
+
+            # Flatten the list of transcriptions
+            rnnt_text = " ".join([text for sublist in rnnt_texts for text in sublist])
+
             end_time = time()
             logging.info(f"Transcription completed in {end_time - start_time:.2f} seconds")
             return JSONResponse(content={"text": rnnt_text})
