@@ -1,0 +1,27 @@
+
+
+
+
+Step to reproduce -
+git clone https://github.com/slabstech/asr-indic-server.git
+cd server-dep
+chmod +x http://setup.sh
+./setup.sh 
+
+This installs all libraries and starts fastapi server on port 8000
+
+cannot access the ports/ server via http.
+
+
+cannot access the fastpi server running on port 8000.
+
+machine ip - 206.1.35.5
+Bad gateway error.
+
+None of the exposed ports are accessible. 
+
+https://kpod-j220dguasogaec5uqndew-8000.blr-1.aipod.olakrutrimsvc.com
+
+
+swagger ui, should be running at localhost:8000/docs 
+
