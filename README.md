@@ -55,11 +55,11 @@ Automatic Speech Recognition (ASR) for Indian languages using IndicConformer mod
   Modify the `compose.yaml` file to set the desired language. Example configurations:
   - **Kannada**:
   ```yaml
-  language: kannada
+  language: kn
   ```
   - **Hindi**:
   ```yaml
-  language: hindi
+  language: hi
   ```
 
 ### For Development (Local)
@@ -190,8 +190,7 @@ huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_ctc_rnnt_large
 ## Running with FastAPI Server
 Run the server using FastAPI with the desired language (e.g., Kannada):
 ```bash
-uvicorn src.asr_indic_server.asr_api:app --reload
-```
+python src/asr_indic_server/asr_api.py --port 8000 --language kn --host 127.0.0.1```
 
 ## Building Docker Image
 Build the Docker image locally:

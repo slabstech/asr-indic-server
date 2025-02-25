@@ -13,6 +13,8 @@ import logging
 from logging.handlers import RotatingFileHandler
 from time import time
 from typing import List
+import argparse
+import uvicorn
 
 # Configure logging with log rotation
 logging.basicConfig(
@@ -26,7 +28,6 @@ logging.basicConfig(
 
 app = FastAPI()
 
-
 def load_model(language_id="kn"):
     model_name = config_models.get(language_id, config_models[default_language])
     model = nemo_asr.models.ASRModel.from_pretrained(model_name)
@@ -35,6 +36,7 @@ def load_model(language_id="kn"):
     model = model.to(device) # transfer model to device
 
     return model
+
 # Load and prepare the model
 try:
     model_language = {
@@ -42,7 +44,7 @@ try:
         "hindi" : "hi",
         "malayalam" : "ml",
         }
-    
+
     config_models = {
         "as": "ai4bharat/indicconformer_stt_as_hybrid_ctc_rnnt_large",
         "bn": "ai4bharat/indicconformer_stt_bn_hybrid_ctc_rnnt_large",
@@ -265,5 +267,12 @@ async def transcribe_audio_batch(files: List[UploadFile] = File(...), language: 
 
     return JSONResponse(content={"transcriptions": transcriptions})
 
-# To run the server, use the following command:
-# uvicorn src.asr_indic_server.asr_api:app --reload
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Run the FastAPI server for ASR.")
+    parser.add_argument("--port", type=int, default=8000, help="Port to run the server on.")
+    parser.add_argument("--language", type=str, default="kn", help="Default language for the ASR model.")
+    parser.add_argument("--host", type=str, default="127.0.0.1", help="Host to run the server on.")
+    args = parser.parse_args()
+
+    default_language = args.language
+    uvicorn.run(app, host=args.host, port=args.port)
