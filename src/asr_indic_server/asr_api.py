@@ -299,7 +299,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run the FastAPI server for ASR.")
     parser.add_argument("--port", type=int, default=8888, help="Port to run the server on.")
     parser.add_argument("--language", type=str, default="kn", help="Default language for the ASR model.")
-    parser.add_argument("--host", type=str, default="127.0.0.1", help="Host to run the server on.")
+    parser.add_argument("--host", type=str, default="0.0.0.0", help="Host to run the server on.")
     args = parser.parse_args()
 
     asr_manager.default_language = args.language
