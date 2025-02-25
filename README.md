@@ -63,57 +63,57 @@ You can evaluate the ASR transcription results using `curl` commands. Below are 
 ### Kannada Transcription Examples
 
 #### Sample 1: kannada_sample_1.wav
-- **Audio File**: [kannada_sample_1.wav](kannada_sample_1.wav)
+- **Audio File**: [samples/kannada_sample_1.wav](samples/kannada_sample_1.wav)
 - **Command**:
 ```bash
 curl -X 'POST' \
 'http://localhost:8000/transcribe/' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
--F 'file=@kannada_sample_1.wav;type=audio/x-wav'
+-F 'file=@samples/kannada_sample_1.wav;type=audio/x-wav'
 ```
 - **Expected Output**:
 ```ಕರ್ನಾಟಕದ ರಾಜಧಾನಿ ಯಾವುದು```
 Translation: "What is the capital of Karnataka"
 
 #### Sample 2: kannada_sample_2.wav
-- **Audio File**: [kannada_sample_2.wav](kannada_sample_2.wav)
+- **Audio File**: [samples/kannada_sample_2.wav](samples/kannada_sample_2.wav)
 - **Command**:
 ```bash
 curl -X 'POST' \
 'http://localhost:8000/transcribe/' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
--F 'file=@kannada_sample_2.wav;type=audio/x-wav'
+-F 'file=@samples/kannada_sample_2.wav;type=audio/x-wav'
 ```
 - **Expected Output**:
 ```ಬೆಂಗಳೂರು ಕರ್ನಾಟಕ ರಾಜ್ಯದ ರಾಜಧಾನಿ ಆಗಿದೆ ಕರ್ನಾಟಕದಲ್ಲಿ ನಾವು ಕನ್ನಡ ಮಾತನಾಡುತ್ತೇವೆ```
 
 #### Sample 3 - Song - 4 minutes
 - [YT Video- Navaduva Nudiye](https://www.youtube.com/watch?v=LuZzhMN8ndQ)
-- **Audio File**: [kannada_sample_3.wav](kannada_sample_3.wav)
+- **Audio File**: [samples/kannada_sample_3.wav](samples/kannada_sample_3.wav)
 - **Command**:
 ```bash
 curl -X 'POST' \
 'http://localhost:8000/transcribe/' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
--F 'file=@kannada_sample_2.wav;type=audio/x-wav'
+-F 'file=@samples/kannada_sample_2.wav;type=audio/x-wav'
 ```
-- **Expected Output**: [kannada_sample_1_out.md](kannada_sample_1_out.md)
+- **Expected Output**: [kannada_sample_3_out.md](docs/kannada_sample_3_out.md)
 
 #### Sample 4 - Song - 6.4 minutes
 - [YT Video- Aagadu Yendu](https://www.youtube.com/watch?v=-Oryie1c-gs)
-- **Audio File**: [kannada_sample_4.wav](kannada_sample_4.wav)
+- **Audio File**: [samples/kannada_sample_4.wav](samples/kannada_sample_4.wav)
 - **Command**:
 ```bash
 curl -X 'POST' \
 'http://localhost:8000/transcribe/' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
--F 'file=@kannada_sample_2.wav;type=audio/x-wav'
+-F 'file=@samples/kannada_sample_4.wav;type=audio/x-wav'
 ```
-- **Expected Output**: [kannada_sample_2_out.md](kannada_sample_2_out.md)
+- **Expected Output**: [kannada_sample_4_out.md](docs/kannada_sample_4_out.md)
 
 **Note**: The ASR does not provide sentence breaks or punctuation (e.g., question marks). We plan to integrate an LLM parser for improved context in future updates.
 
@@ -128,8 +128,8 @@ curl -X 'POST' \
 'http://localhost:8000/transcribe_batch/' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
--F 'files=@kannada_sample_1.wav;type=audio/x-wav' \
--F 'files=@kannada_sample_2.wav;type=audio/x-wav'
+-F 'files=@samples/kannada_sample_1.wav;type=audio/x-wav' \
+-F 'files=@samples/kannada_sample_2.wav;type=audio/x-wav'
 ```
 - **Expected Output**:
 ```json
@@ -208,13 +208,3 @@ python nemo_asr.py
 python hf_asr.py
 ```
 
-This README provides a comprehensive guide to setting up and running the ASR Indic Server. For more details, refer to the linked resources.
-```
-
-### Changes Made:
-
-1. **Added `/transcribe_batch` Endpoint Documentation**:
-   - Included a section describing the `/transcribe_batch` endpoint, explaining its purpose and providing an example `curl` command for batch transcription.
-
-2. **Updated Examples**:
-   - Provided an example output for the batch transcription endpoint.
