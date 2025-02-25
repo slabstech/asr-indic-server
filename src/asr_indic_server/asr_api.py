@@ -183,9 +183,9 @@ async def transcribe_audio(file: UploadFile = File(...), language: str = Query(.
 
             asr_manager.model.cur_decoder = "rnnt"
 
-            with torch.amp.autocast('cuda', dtype=torch.bfloat16):
-                rnnt_texts = asr_manager.model.transcribe(chunk_file_paths, batch_size=1, language_id=language_id)
-            #rnnt_texts = asr_manager.model.transcribe(chunk_file_paths, batch_size=1, language_id=language_id)
+            #with torch.amp.autocast('cuda', dtype=torch.bfloat16):
+            #    rnnt_texts = asr_manager.model.transcribe(chunk_file_paths, batch_size=1, language_id=language_id)
+            rnnt_texts = asr_manager.model.transcribe(chunk_file_paths, batch_size=1, language_id=language_id)
 
             # Flatten the list of transcriptions
             rnnt_text = " ".join([text for sublist in rnnt_texts for text in sublist])
@@ -265,9 +265,9 @@ async def transcribe_audio_batch(files: List[UploadFile] = File(...), language: 
 
             asr_manager.model.cur_decoder = "rnnt"
 
-            with torch.amp.autocast('cuda', dtype=torch.bfloat16):
-                rnnt_texts = asr_manager.model.transcribe(tmp_file_paths, batch_size=len(files), language_id=language_id)
-            #rnnt_texts = asr_manager.model.transcribe(tmp_file_paths, batch_size=len(files), language_id=language_id)
+            #with torch.amp.autocast('cuda', dtype=torch.bfloat16):
+            #    rnnt_texts = asr_manager.model.transcribe(tmp_file_paths, batch_size=len(files), language_id=language_id)
+            rnnt_texts = asr_manager.model.transcribe(tmp_file_paths, batch_size=len(files), language_id=language_id)
             
             logging.info(f"Raw transcriptions from model: {rnnt_texts}")
             end_time = time()
