@@ -1,20 +1,32 @@
+# Use the official PyTorch image with CUDA support as base
 FROM pytorch/pytorch:2.6.0-cuda12.6-cudnn9-runtime
-# hadolint ignore=DL3008,DL3015,DL4006
-RUN apt-get update && \
-    apt-get install -y git curl software-properties-common ffmpeg && \
-    add-apt-repository ppa:deadsnakes/ppa && \
-    apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y python3.12 python3-distutils && \
-    curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12 && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Set working directory
 WORKDIR /root/asr_indic_server
 
-COPY ./requirements.txt .
-RUN pip3.12 install --no-cache-dir -r requirements.txt
+# Update and install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    git \
+    curl \
+    ffmpeg && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
+# Upgrade pip and install Python dependencies
+COPY ./requirements.txt .
+RUN python -m pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy source code
 COPY ./src ./src
+
+# Set environment variables
 ENV PYTHONPATH=/root/asr_indic_server/src
 ENV UVICORN_HOST=0.0.0.0
-ENV UVICORN_PORT=8000
-CMD ["uvicorn", "asr_indic_server.asr_api:app"]
+ENV UVICORN_PORT=7860
+
+
+CMD ["python","src/asr_indic_server/asr_api.py"]
+
+# Run the application
+#CMD ["uvicorn", "asr_indic_server.asr_api:app", "--host", "0.0.0.0", "--port", "8000"]
