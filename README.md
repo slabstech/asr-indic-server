@@ -246,3 +246,4 @@ python nemo_asr.py
 python hf_asr.py
 ```
 
+- server-setup.sh - Use for container deployment on OlaKrutrim AI Pod
