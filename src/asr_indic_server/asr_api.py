@@ -26,55 +26,110 @@ logging.basicConfig(
     ]
 )
 
-app = FastAPI()
-
-def load_model(language_id="kn"):
-    model_name = config_models.get(language_id, config_models[default_language])
-    model = nemo_asr.models.ASRModel.from_pretrained(model_name)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.freeze() # inference mode
-    model = model.to(device) # transfer model to device
-
-    return model
-
-# Load and prepare the model
-try:
-    model_language = {
-        "kannada": "kn",
-        "hindi" : "hi",
-        "malayalam" : "ml",
+class ASRModelManager:
+    def __init__(self, default_language="kn"):
+        self.default_language = default_language
+        self.model_language = {
+            "kannada": "kn",
+            "hindi": "hi",
+            "malayalam": "ml",
+            "assamese": "as",
+            "bengali": "bn",
+            "bodo": "brx",
+            "dogri": "doi",
+            "gujarati": "gu",
+            "kashmiri": "ks",
+            "konkani": "kok",
+            "maithili": "mai",
+            "manipuri": "mni",
+            "marathi": "mr",
+            "nepali": "ne",
+            "odia": "or",
+            "punjabi": "pa",
+            "sanskrit": "sa",
+            "santali": "sat",
+            "sindhi": "sd",
+            "tamil": "ta",
+            "telugu": "te",
+            "urdu": "ur"
         }
+        self.config_models = {
+            "as": "ai4bharat/indicconformer_stt_as_hybrid_rnnt_large",
+            "bn": "ai4bharat/indicconformer_stt_bn_hybrid_rnnt_large",
+            "brx": "ai4bharat/indicconformer_stt_brx_hybrid_rnnt_large",
+            "doi": "ai4bharat/indicconformer_stt_doi_hybrid_rnnt_large",
+            "gu": "ai4bharat/indicconformer_stt_gu_hybrid_rnnt_large",
+            "hi": "ai4bharat/indicconformer_stt_hi_hybrid_rnnt_large",
+            "kn": "ai4bharat/indicconformer_stt_kn_hybrid_rnnt_large",
+            "ks": "ai4bharat/indicconformer_stt_ks_hybrid_rnnt_large",
+            "kok": "ai4bharat/indicconformer_stt_kok_hybrid_rnnt_large",
+            "mai": "ai4bharat/indicconformer_stt_mai_hybrid_rnnt_large",
+            "ml": "ai4bharat/indicconformer_stt_ml_hybrid_rnnt_large",
+            "mni": "ai4bharat/indicconformer_stt_mni_hybrid_rnnt_large",
+            "mr": "ai4bharat/indicconformer_stt_mr_hybrid_rnnt_large",
+            "ne": "ai4bharat/indicconformer_stt_ne_hybrid_rnnt_large",
+            "or": "ai4bharat/indicconformer_stt_or_hybrid_rnnt_large",
+            "pa": "ai4bharat/indicconformer_stt_pa_hybrid_rnnt_large",
+            "sa": "ai4bharat/indicconformer_stt_sa_hybrid_rnnt_large",
+            "sat": "ai4bharat/indicconformer_stt_sat_hybrid_rnnt_large",
+            "sd": "ai4bharat/indicconformer_stt_sd_hybrid_rnnt_large",
+            "ta": "ai4bharat/indicconformer_stt_ta_hybrid_rnnt_large",
+            "te": "ai4bharat/indicconformer_stt_te_hybrid_rnnt_large",
+            "ur": "ai4bharat/indicconformer_stt_ur_hybrid_rnnt_large"
+        }
+        self.model = self.load_model(self.default_language)
 
-    config_models = {
-        "as": "ai4bharat/indicconformer_stt_as_hybrid_ctc_rnnt_large",
-        "bn": "ai4bharat/indicconformer_stt_bn_hybrid_ctc_rnnt_large",
-        "brx": "ai4bharat/indicconformer_stt_brx_hybrid_ctc_rnnt_large",
-        "doi": "ai4bharat/indicconformer_stt_doi_hybrid_ctc_rnnt_large",
-        "gu": "ai4bharat/indicconformer_stt_gu_hybrid_ctc_rnnt_large",
-        "hi": "ai4bharat/indicconformer_stt_hi_hybrid_ctc_rnnt_large",
-        "kn": "ai4bharat/indicconformer_stt_kn_hybrid_ctc_rnnt_large",
-        "ks": "ai4bharat/indicconformer_stt_ks_hybrid_ctc_rnnt_large",
-        "kok": "ai4bharat/indicconformer_stt_kok_hybrid_ctc_rnnt_large",
-        "mai": "ai4bharat/indicconformer_stt_mai_hybrid_ctc_rnnt_large",
-        "ml": "ai4bharat/indicconformer_stt_ml_hybrid_ctc_rnnt_large",
-        "mni": "ai4bharat/indicconformer_stt_mni_hybrid_ctc_rnnt_large",
-        "mr": "ai4bharat/indicconformer_stt_mr_hybrid_ctc_rnnt_large",
-        "ne": "ai4bharat/indicconformer_stt_ne_hybrid_ctc_rnnt_large",
-        "or": "ai4bharat/indicconformer_stt_or_hybrid_ctc_rnnt_large",
-        "pa": "ai4bharat/indicconformer_stt_pa_hybrid_ctc_rnnt_large",
-        "sa": "ai4bharat/indicconformer_stt_sa_hybrid_ctc_rnnt_large",
-        "sat": "ai4bharat/indicconformer_stt_sat_hybrid_ctc_rnnt_large",
-        "sd": "ai4bharat/indicconformer_stt_sd_hybrid_ctc_rnnt_large",
-        "ta": "ai4bharat/indicconformer_stt_ta_hybrid_ctc_rnnt_large",
-        "te": "ai4bharat/indicconformer_stt_te_hybrid_ctc_rnnt_large",
-        "ur": "ai4bharat/indicconformer_stt_ur_hybrid_ctc_rnnt_large"
-    }
+    def load_model(self, language_id="kn"):
+        model_name = self.config_models.get(language_id, self.config_models["kn"])
+        model = nemo_asr.models.ASRModel.from_pretrained(model_name)
 
-    default_language = "kn"
-    model = load_model(default_language)
-except Exception as e:
-    logging.error(f"Failed to load model: {str(e)}")
-    raise HTTPException(status_code=500, detail=f"Failed to load model: {str(e)}")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model.freeze() # inference mode
+        model = model.to(device) # transfer model to device
+
+        return model
+
+    def split_audio(self, file_path, chunk_duration_ms=15000):
+        """
+        Splits an audio file into chunks of specified duration if the audio duration exceeds the chunk duration.
+
+        :param file_path: Path to the audio file.
+        :param chunk_duration_ms: Duration of each chunk in milliseconds (default is 15000 ms or 15 seconds).
+        """
+        # Load the audio file
+        audio = AudioSegment.from_file(file_path)
+
+        # Get the duration of the audio in milliseconds
+        duration_ms = len(audio)
+
+        # Check if the duration is more than the specified chunk duration
+        if duration_ms > chunk_duration_ms:
+            # Calculate the number of chunks needed
+            num_chunks = duration_ms // chunk_duration_ms
+            if duration_ms % chunk_duration_ms != 0:
+                num_chunks += 1
+
+            # Split the audio into chunks
+            chunks = [audio[i*chunk_duration_ms:(i+1)*chunk_duration_ms] for i in range(num_chunks)]
+
+            # Create a directory to save the chunks
+            output_dir = "audio_chunks"
+            os.makedirs(output_dir, exist_ok=True)
+
+            # Export each chunk to separate files
+            chunk_file_paths = []
+            for i, chunk in enumerate(chunks):
+                chunk_file_path = os.path.join(output_dir, f"chunk_{i}.wav")
+                chunk.export(chunk_file_path, format="wav")
+                chunk_file_paths.append(chunk_file_path)
+                print(f"Chunk {i} exported successfully to {chunk_file_path}.")
+
+            return chunk_file_paths
+        else:
+            return [file_path]
+
+app = FastAPI()
+asr_manager = ASRModelManager()
 
 # Define the response model
 class TranscriptionResponse(BaseModel):
@@ -83,47 +138,8 @@ class TranscriptionResponse(BaseModel):
 class BatchTranscriptionResponse(BaseModel):
     transcriptions: List[str]
 
-def split_audio(file_path, chunk_duration_ms=15000):
-    """
-    Splits an audio file into chunks of specified duration if the audio duration exceeds the chunk duration.
-
-    :param file_path: Path to the audio file.
-    :param chunk_duration_ms: Duration of each chunk in milliseconds (default is 15000 ms or 15 seconds).
-    """
-    # Load the audio file
-    audio = AudioSegment.from_file(file_path)
-
-    # Get the duration of the audio in milliseconds
-    duration_ms = len(audio)
-
-    # Check if the duration is more than the specified chunk duration
-    if duration_ms > chunk_duration_ms:
-        # Calculate the number of chunks needed
-        num_chunks = duration_ms // chunk_duration_ms
-        if duration_ms % chunk_duration_ms != 0:
-            num_chunks += 1
-
-        # Split the audio into chunks
-        chunks = [audio[i*chunk_duration_ms:(i+1)*chunk_duration_ms] for i in range(num_chunks)]
-
-        # Create a directory to save the chunks
-        output_dir = "audio_chunks"
-        os.makedirs(output_dir, exist_ok=True)
-
-        # Export each chunk to separate files
-        chunk_file_paths = []
-        for i, chunk in enumerate(chunks):
-            chunk_file_path = os.path.join(output_dir, f"chunk_{i}.wav")
-            chunk.export(chunk_file_path, format="wav")
-            chunk_file_paths.append(chunk_file_path)
-            print(f"Chunk {i} exported successfully to {chunk_file_path}.")
-
-        return chunk_file_paths
-    else:
-        return [file_path]
-
 @app.post("/transcribe/", response_model=TranscriptionResponse)
-async def transcribe_audio(file: UploadFile = File(...), language: str = Query(..., enum=model_language)):
+async def transcribe_audio(file: UploadFile = File(...), language: str = Query(..., enum=list(asr_manager.model_language.keys()))):
     start_time = time()
     try:
         # Check file extension
@@ -154,18 +170,21 @@ async def transcribe_audio(file: UploadFile = File(...), language: str = Query(.
             tmp_file_path = tmp_file.name
 
         # Split the audio if necessary
-        chunk_file_paths = split_audio(tmp_file_path)
+        chunk_file_paths = asr_manager.split_audio(tmp_file_path)
 
         try:
             # Transcribe the audio
-            model.cur_decoder = "rnnt"
-            language_id = language.split(',')[1]
+            language_id = asr_manager.model_language.get(language, asr_manager.default_language)
 
-            if(language_id != default_language):
-                model = load_model(language_id)
-                default_language = language_id
+            if language_id != asr_manager.default_language:
+                asr_manager.model = asr_manager.load_model(language_id)
+                asr_manager.default_language = language_id
 
-            rnnt_texts = model.transcribe(chunk_file_paths, batch_size=1, language_id=language_id)
+            asr_manager.model.cur_decoder = "rnnt"
+
+            #with torch.amp.autocast('cuda'):
+            #    rnnt_texts = asr_manager.model.transcribe(chunk_file_paths, batch_size=1, language_id=language_id)
+            rnnt_texts = asr_manager.model.transcribe(chunk_file_paths, batch_size=1, language_id=language_id)
 
             # Flatten the list of transcriptions
             rnnt_text = " ".join([text for sublist in rnnt_texts for text in sublist])
@@ -192,7 +211,7 @@ async def transcribe_audio(file: UploadFile = File(...), language: str = Query(.
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 @app.post("/transcribe_batch/", response_model=BatchTranscriptionResponse)
-async def transcribe_audio_batch(files: List[UploadFile] = File(...), language: str = Query(..., enum=model_language)):
+async def transcribe_audio_batch(files: List[UploadFile] = File(...), language: str = Query(..., enum=list(asr_manager.model_language.keys()))):
     start_time = time()
     tmp_file_paths = []
     transcriptions = []
@@ -226,21 +245,24 @@ async def transcribe_audio_batch(files: List[UploadFile] = File(...), language: 
                 tmp_file_path = tmp_file.name
 
             # Split the audio if necessary
-            chunk_file_paths = split_audio(tmp_file_path)
+            chunk_file_paths = asr_manager.split_audio(tmp_file_path)
             tmp_file_paths.extend(chunk_file_paths)
 
         logging.info(f"Temporary file paths: {tmp_file_paths}")
         try:
             # Transcribe the audio files in batch
-            model.cur_decoder = "rnnt"
+            language_id = asr_manager.model_language.get(language, asr_manager.default_language)
 
-            language_id = language.split(',')[1]
+            if language_id != asr_manager.default_language:
+                asr_manager.model = asr_manager.load_model(language_id)
+                asr_manager.default_language = language_id
 
-            if(language_id != default_language):
-                model = load_model(language_id)
-                default_language = language_id
+            asr_manager.model.cur_decoder = "rnnt"
 
-            rnnt_texts = model.transcribe(tmp_file_paths, batch_size=len(files), language_id=language_id)
+            #with torch.amp.autocast('cuda'):
+            #    rnnt_texts = asr_manager.model.transcribe(tmp_file_paths, batch_size=len(files), language_id=language_id)
+            rnnt_texts = asr_manager.model.transcribe(tmp_file_paths, batch_size=len(files), language_id=language_id)
+            
             logging.info(f"Raw transcriptions from model: {rnnt_texts}")
             end_time = time()
             logging.info(f"Transcription completed in {end_time - start_time:.2f} seconds")
@@ -274,5 +296,5 @@ if __name__ == "__main__":
     parser.add_argument("--host", type=str, default="127.0.0.1", help="Host to run the server on.")
     args = parser.parse_args()
 
-    default_language = args.language
+    asr_manager.default_language = args.language
     uvicorn.run(app, host=args.host, port=args.port)
