@@ -3,7 +3,6 @@
 ## Overview
 Automatic Speech Recognition (ASR) for Indian languages using IndicConformer models. The default model is set to Kannada ASR.
 
-
 ## Demo Video
 
 Watch a quick demo of our project in action! Click the image below to view the video on YouTube.
@@ -12,55 +11,136 @@ Watch a quick demo of our project in action! Click the image below to view the v
   <img src="https://img.youtube.com/vi/F0Mo0zjyysM/0.jpg" alt="Watch the video">
 </a>
 
-
 ## Table of Contents
 - [Supported Languages](#supported-languages)
-- [Getting Started](#getting-started)
-- [For Production (Docker)](#for-production-docker)
-- [For Development (Local)](#for-development-local)
-- [Evaluating Results](#evaluating-results)
-- [Kannada Transcription Examples](#kannada-transcription-examples)
+- [Live Server](#live-server)
+- [Getting Started](#getting-started-development)
+  - [For Production (Docker)](#for-production-docker)
+    - [Prerequisites](#prerequisites)
+    - [Steps](#steps)
+  - [For Development (Local)](#for-development-local)
+    - [Prerequisites](#prerequisites-1)
+    - [Steps](#steps-1)
 - [Downloading Translation Models](#downloading-translation-models)
+  - [Kannada](#kannada)
+  - [Other Languages](#other-languages)
+    - [Malayalam](#malayalam)
+    - [Hindi](#hindi)
 - [Running with FastAPI Server](#running-with-fastapi-server)
+- [Live Server](#live-server)
+  - [Service Modes](#service-modes)
+    - [High Latency, Slow System (Available 24/7)](#high-latency-slow-system-available-247)
+    - [Low Latency, Fast System (Available on Request)](#low-latency-fast-system-available-on-request)
+  - [How to Use the Service](#how-to-use-the-service)
+    - [High Latency Service](#high-latency-service)
+    - [Low Latency Service](#low-latency-service)
+    - [Notes](#notes)
+- [Evaluating Results](#evaluating-results)
+  - [Kannada Transcription Examples](#kannada-transcription-examples)
+    - [Sample 1: kannada_sample_1.wav](#sample-1-kannada_sample_1wav)
+    - [Sample 2: kannada_sample_2.wav](#sample-2-kannada_sample_2wav)
+    - [Sample 3 - Song - 4 minutes](#sample-3---song---4-minutes)
+    - [Sample 4 - Song - 6.4 minutes](#sample-4---song---64-minutes)
+  - [Batch Transcription Examples](#batch-transcription-examples)
+    - [Transcribe Batch Endpoint](#transcribe-batch-endpoint)
 - [Building Docker Image](#building-docker-image)
+  - [Run the Docker Image](#run-the-docker-image)
 - [Troubleshooting](#troubleshooting)
 - [References](#references)
 - [Additional Resources](#additional-resources)
+  - [Running Nemo Model](#running-nemo-model)
+  - [Running with Transformers](#running-with-transformers)
 
-## Supported Languages - 22
+## Supported Languages
 
-- Assamese (`as`)
-- Bengali (`bn`)
-- Bodo (`brx`)
-- Dogri (`doi`)
-- Gujarati (`gu`)
-- Hindi (`hi`)
-- Kannada (`kn`)
-- Kashmiri (`ks`)
-- Konkani (`kok`)
-- Maithili (`mai`)
-- Malayalam (`ml`)
-- Manipuri (`mni`)
-- Marathi (`mr`)
-- Nepali (`ne`)
-- Odia (`or`)
-- Punjabi (`pa`)
-- Sanskrit (`sa`)
-- Santali (`sat`)
-- Sindhi (`sd`)
-- Tamil (`ta`)
-- Telugu (`te`)
-- Urdu (`ur`)
+22 Indian languages are supported, thanks to AIBharat organisation
 
+| Language      | Code  |
+|---------------|-------|
+| Assamese      | `as`  |
+| Bengali       | `bn`  |
+| Bodo          | `brx` |
+| Dogri         | `doi` |
+| Gujarati      | `gu`  |
+| Hindi         | `hi`  |
+| Kannada       | `kn`  |
+| Kashmiri      | `ks`  |
+| Konkani       | `kok` |
+| Maithili      | `mai` |
+| Malayalam     | `ml`  |
+| Manipuri      | `mni` |
+| Marathi       | `mr`  |
+| Nepali        | `ne`  |
+| Odia          | `or`  |
+| Punjabi       | `pa`  |
+| Sanskrit      | `sa`  |
+| Santali       | `sat` |
+| Sindhi        | `sd`  |
+| Tamil         | `ta`  |
+| Telugu        | `te`  |
+| Urdu          | `ur`  |
 
-## Getting Started
+### Live Server
+
+We have hosted an Automatic Speech Recognition (ASR) service that can be used to verify the accuracy of audio transcriptions. The service is available in two modes:
+
+#### High Latency, Slow System (Available 24/7)
+- **URL**: [High Latency ASR Service](https://huggingface.co/spaces/gaganyatri/asr_indic_server_cpu)
+
+#### Low Latency, Fast System (Available on Request)
+- **URL**: [Low Latency ASR Service](https://huggingface.co/spaces/gaganyatri/asr_indic_server_cpu)
+
+### How to Use the Service
+
+1. With curl
+
+You can test the service using `curl` commands. Below are examples for both service modes:
+
+#### High Latency Service
+
+```sh curl_high_latency.sh
+curl -X 'POST' \
+  'https://gaganyatri-asr-indic-server-cpu.hf.space/transcribe/?language=kannada' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'file=@samples/kannada_sample_2.wav;type=audio/x-wav'
+```
+
+#### Low Latency Service
+
+```sh curl_low_latency.sh
+curl -X 'POST' \
+  'https://gaganyatri-asr-indic-server.hf.space/transcribe/?language=kannada' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'file=@samples/kannada_sample_2.wav;type=audio/x-wav'
+```
+
+2. Via Swagger UI 
+
+- **URL**: [High Latency ASR Service](https://huggingface.co/spaces/gaganyatri/asr_indic_server_cpu)
+
+- **URL**: [Low Latency ASR Service](https://huggingface.co/spaces/gaganyatri/asr_indic_server_cpu)
+
+### Notes
+
+- Ensure that the audio file path (`samples/kannada_sample_2.wav`) is correct and accessible.
+- The `language` parameter in the URL specifies the language of the audio file. In the examples above, it is set to `kannada`.
+- The service expects the audio file to be in WAV format.
+
+## Getting Started - Development
 
 ### For Production (Docker)
 - **Prerequisites**: Docker and Docker Compose
 - **Steps**:
   1. **Start the server**:
+  For GPU
   ```bash
   docker compose -f compose.yaml up -d
+  ```
+  For CPU only
+  ```bash
+  docker compose -f cpu-compose.yaml up -d
   ```
   2. **Update source and target languages**:
   Modify the `compose.yaml` file to set the desired language. Example configurations:
@@ -89,8 +169,44 @@ Watch a quick demo of our project in action! Click the image below to view the v
   venv\Scripts\activate
   ```
   3. **Install dependencies**:
+  - For GPU
+      ```bash
+      pip install -r requirements.txt
+      ```
+  - For CPU only
+      ```
+      pip install -r cpu-requirements.txt
+      ```
+
+## Downloading Translation Models
+Models can be downloaded from AI4Bharat's HuggingFace repository:
+
+### Kannada
+```bash
+huggingface-cli download ai4bharat/indicconformer_stt_kn_hybrid_rnnt_large
+```
+
+### Other Languages
+
+#### Malayalam
+```bash
+huggingface-cli download ai4bharat/indicconformer_stt_ml_hybrid_rnnt_large
+```
+
+#### Hindi
+```bash
+huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_rnnt_large
+```
+
+## Running with FastAPI Server
+Run the server using FastAPI with the desired language (e.g., Kannada):
+- for GPU
   ```bash
-  pip install -r requirements.txt
+  python src/asr_api.py --port 8000 --language kn --host 0.0.0.0 --device gpu
+  ```
+- for CPU only
+  ```bash
+  python src/asr_api.py --port 8000 --language kn --host 0.0.0.0 --device cpu
   ```
 
 ## Evaluating Results
@@ -178,36 +294,15 @@ curl -X 'POST' \
 }
 ```
 
-## Downloading Translation Models
-Models can be downloaded from AI4Bharat's HuggingFace repository:
-
-### Kannada
-```bash
-huggingface-cli download ai4bharat/indicconformer_stt_kn_hybrid_ctc_rnnt_large
-```
-
-### Other Languages
-
-#### Malayalam
-```bash
-huggingface-cli download ai4bharat/indicconformer_stt_ml_hybrid_ctc_rnnt_large
-```
-
-#### Hindi
-```bash
-huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_ctc_rnnt_large
-```
-
-## Running with FastAPI Server
-Run the server using FastAPI with the desired language (e.g., Kannada):
-```bash
-python src/asr_indic_server/asr_api.py --port 8000 --language kn --host 127.0.0.1
-```
-
 ## Building Docker Image
 Build the Docker image locally:
 ```bash
 docker build -t slabstech/asr_indic_server -f Dockerfile .
+```
+
+### Run the Docker Image
+```
+docker run --gpus all -it --rm -p 7860:7860 slabstech/asr_indic_server
 ```
 
 ## Troubleshooting
@@ -245,3 +340,5 @@ python nemo_asr.py
 python hf_asr.py
 ```
 
+
+- server-setup.sh - Use for container deployment on OlaKrutrim AI Pod

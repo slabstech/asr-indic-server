@@ -28,8 +28,9 @@ logging.basicConfig(
 )
 
 class ASRModelManager:
-    def __init__(self, default_language="kn"):
+    def __init__(self, default_language="kn", device_type="cuda"):
         self.default_language = default_language
+        self.device_type = device_type
         self.model_language = {
             "kannada": "kn",
             "hindi": "hi",
@@ -84,7 +85,7 @@ class ASRModelManager:
         model_name = self.config_models.get(language_id, self.config_models["kn"])
         model = nemo_asr.models.ASRModel.from_pretrained(model_name)
 
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        device = torch.device(self.device_type if torch.cuda.is_available() and self.device_type == "cuda" else "cpu")
         model.freeze() # inference mode
         model = model.to(device) # transfer model to device
 
@@ -215,7 +216,6 @@ async def transcribe_audio(file: UploadFile = File(...), language: str = Query(.
 async def home():
     return RedirectResponse(url="/docs")
 
-
 @app.post("/transcribe_batch/", response_model=BatchTranscriptionResponse)
 async def transcribe_audio_batch(files: List[UploadFile] = File(...), language: str = Query(..., enum=list(asr_manager.model_language.keys()))):
     start_time = time()
@@ -268,7 +268,7 @@ async def transcribe_audio_batch(files: List[UploadFile] = File(...), language: 
             #with torch.amp.autocast('cuda', dtype=torch.bfloat16):
             #    rnnt_texts = asr_manager.model.transcribe(tmp_file_paths, batch_size=len(files), language_id=language_id)
             rnnt_texts = asr_manager.model.transcribe(tmp_file_paths, batch_size=len(files), language_id=language_id)
-            
+
             logging.info(f"Raw transcriptions from model: {rnnt_texts}")
             end_time = time()
             logging.info(f"Transcription completed in {end_time - start_time:.2f} seconds")
@@ -300,7 +300,8 @@ if __name__ == "__main__":
     parser.add_argument("--port", type=int, default=8888, help="Port to run the server on.")
     parser.add_argument("--language", type=str, default="kn", help="Default language for the ASR model.")
     parser.add_argument("--host", type=str, default="0.0.0.0", help="Host to run the server on.")
+    parser.add_argument("--device", type=str, default="cuda", help="Device type to run the model on (cuda or cpu).")
     args = parser.parse_args()
 
-    asr_manager.default_language = args.language
+    asr_manager = ASRModelManager(default_language=args.language, device_type=args.device)
     uvicorn.run(app, host=args.host, port=args.port)
