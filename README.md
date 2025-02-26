@@ -134,8 +134,13 @@ curl -X 'POST' \
 - **Prerequisites**: Docker and Docker Compose
 - **Steps**:
   1. **Start the server**:
+  For GPU
   ```bash
   docker compose -f compose.yaml up -d
+  ```
+  For CPU only
+  ```bash
+  docker compose -f cpu-compose.yaml up -d
   ```
   2. **Update source and target languages**:
   Modify the `compose.yaml` file to set the desired language. Example configurations:
@@ -164,9 +169,14 @@ curl -X 'POST' \
   venv\Scripts\activate
   ```
   3. **Install dependencies**:
-  ```bash
-  pip install -r requirements.txt
-  ```
+  - For GPU
+      ```bash
+      pip install -r requirements.txt
+      ```
+  - For CPU only
+      ```
+      pip install -r cpu-requirements.txt
+      ```
 
 ## Downloading Translation Models
 Models can be downloaded from AI4Bharat's HuggingFace repository:
@@ -190,9 +200,14 @@ huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_rnnt_large
 
 ## Running with FastAPI Server
 Run the server using FastAPI with the desired language (e.g., Kannada):
-```bash
-python src/asr_api.py --port 8000 --language kn --host 0.0.0.0
-```
+- for GPU
+  ```bash
+  python src/asr_api.py --port 8000 --language kn --host 0.0.0.0 --device gpu
+  ```
+- for CPU only
+  ```bash
+  python src/asr_api.py --port 8000 --language kn --host 0.0.0.0 --device cpu
+  ```
 
 ## Evaluating Results
 You can evaluate the ASR transcription results using `curl` commands. Below are examples for Kannada audio samples.

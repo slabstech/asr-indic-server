@@ -4,7 +4,7 @@ services:
     volumes:
       - ~/.cache/huggingface:/root/.cache/huggingface
     ports:
-      - 8000:8000
+      - 7860:7860
     environment:
       - LANGUAGE=kn
     deploy:

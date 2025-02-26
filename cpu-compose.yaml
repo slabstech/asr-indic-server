@@ -1,0 +1,9 @@
+services:
+  asr-indic-server:
+    image: slabstech/asr_indic_server_cpu
+    volumes:
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    ports:
+      - 7860:7860
+    environment:
+      - LANGUAGE=kn
