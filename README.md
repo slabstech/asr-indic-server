@@ -211,6 +211,11 @@ Build the Docker image locally:
 docker build -t slabstech/asr_indic_server -f Dockerfile .
 ```
 
+### Run the Docker Image
+```
+docker run --gpus all -it --rm -p 7860:7860 slabstech/asr_indic_server
+```
+
 ## Troubleshooting
 - **Docker fails to start**: Ensure Docker is running and the `compose.yaml` file is correctly formatted.
 - **Transcription errors**: Verify the audio file is in WAV format, mono, and sampled at 16kHz. Adjust using:

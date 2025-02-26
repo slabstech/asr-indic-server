@@ -1,6 +1,6 @@
 services:
   asr-indic-server:
-    image: slabstech/asr-indic-server
+    image: slabstech/asr_indic_server
     volumes:
       - ~/.cache/huggingface:/root/.cache/huggingface
     ports:

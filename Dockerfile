@@ -1,9 +1,7 @@
 # Use the official PyTorch image with CUDA support as base
 FROM pytorch/pytorch:2.6.0-cuda12.6-cudnn9-runtime
-# Set working directory
-WORKDIR /root/asr_indic_server
 
-# Update and install system dependencies
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     git \
@@ -12,21 +10,30 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip and install Python dependencies
-COPY ./requirements.txt .
-RUN python -m pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN useradd -m -u 1000 user
 
-# Copy source code
-COPY ./src ./src
+USER user
 
-# Set environment variables
-ENV PYTHONPATH=/root/asr_indic_server/src
-ENV UVICORN_HOST=0.0.0.0
-ENV UVICORN_PORT=7860
+ENV PATH="/home/user/.local/bin:$PATH"
+# set work directory
+WORKDIR /app
 
-RUN cd src/
-CMD ["python","asr_api.py"]
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# Run the application
-#CMD ["uvicorn", "asr_indic_server.asr_api:app", "--host", "0.0.0.0", "--port", "8000"]
+# install system dependencies
+#RUN apt-get update && apt-get install -y netcat
+
+# install dependencies
+RUN pip install --upgrade pip
+COPY --chown=user ./requirements.txt requirements.txt
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
+
+
+# copy project
+
+COPY --chown=user . /app
+
+# CMD to run the application
+CMD ["python", "src/asr_api.py", "--host", "0.0.0.0", "--port", "7860"]
