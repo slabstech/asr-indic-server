@@ -1,39 +1,26 @@
-# Use the official PyTorch image with CUDA support as base
-FROM pytorch/pytorch:2.6.0-cuda12.6-cudnn9-runtime
+# Use the official NVIDIA CUDA image as the base image
+FROM nvidia/cuda:12.8.0-cudnn-devel-ubuntu22.04
 
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    git \
-    curl \
-    ffmpeg && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN useradd -m -u 1000 user
-
-USER user
-
-ENV PATH="/home/user/.local/bin:$PATH"
-# set work directory
+# Set the working directory in the container
 WORKDIR /app
 
-# set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# Install Python and pip
+RUN apt-get update && apt-get install -y python3 python3-pip git
 
-# install system dependencies
-#RUN apt-get update && apt-get install -y netcat
+# Set Python3 as the default python
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
-# install dependencies
-RUN pip install --upgrade pip
-COPY --chown=user ./requirements.txt requirements.txt
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
+# Copy the requirements file into the container
+COPY requirements.txt .
 
+# Install the dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# copy project
+# Copy the rest of the application code into the container
+COPY . .
 
-COPY --chown=user . /app
+# Expose the port the app runs on
+EXPOSE 8888
 
-# CMD to run the application
-CMD ["python", "src/asr_api.py", "--host", "0.0.0.0", "--port", "7860"]
+# Command to run the application
+CMD ["python", "src/asr_api.py", "--host", "0.0.0.0", "--port", "8888", "--device", "cuda"]
