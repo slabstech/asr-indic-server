@@ -5,7 +5,7 @@ FROM nvidia/cuda:12.8.0-cudnn-devel-ubuntu22.04
 WORKDIR /app
 
 # Install Python and pip
-RUN apt-get update && apt-get install -y python3 python3-pip git ffmpeg sudo
+RUN apt-get update && apt-get install -y python3 python3-pip git ffmpeg sudo wget
 
 # Set Python3 as the default python
 RUN ln -s /usr/bin/python3 /usr/bin/python
@@ -26,7 +26,7 @@ RUN useradd -ms /bin/bash appuser
 USER appuser
 
 # Set the working directory for the non-root user
-WORKDIR /home/appuser
+WORKDIR /app
 
 # Expose the port the app runs on
 EXPOSE 8888
