@@ -88,7 +88,7 @@ We have hosted an Automatic Speech Recognition (ASR) service that can be used to
 - **URL**: [High Latency ASR Service](https://huggingface.co/spaces/gaganyatri/asr_indic_server_cpu)
 
 #### Low Latency, Fast System (Available on Request)
-- **URL**: [Low Latency ASR Service](https://huggingface.co/spaces/gaganyatri/asr_indic_server_cpu)
+- **URL**: [Low Latency ASR Service](https://huggingface.co/spaces/gaganyatri/asr_indic_server)
 
 ### How to Use the Service
 
@@ -202,11 +202,11 @@ huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_rnnt_large
 Run the server using FastAPI with the desired language (e.g., Kannada):
 - for GPU
   ```bash
-  python src/asr_api.py --port 8000 --language kn --host 0.0.0.0 --device gpu
+  python src/asr_api.py --port 7860 --language kn --host 0.0.0.0 --device gpu
   ```
 - for CPU only
   ```bash
-  python src/asr_api.py --port 8000 --language kn --host 0.0.0.0 --device cpu
+  python src/asr_api.py --port 7860 --language kn --host 0.0.0.0 --device cpu
   ```
 
 ## Evaluating Results
@@ -220,7 +220,7 @@ You can evaluate the ASR transcription results using `curl` commands. Below are 
 - **Command**:
 ```bash
 curl -X 'POST' \
-'http://localhost:8000/transcribe/' \
+'http://localhost:7860/transcribe/' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
 -F 'file=@samples/kannada_sample_1.wav;type=audio/x-wav'
@@ -234,7 +234,7 @@ Translation: "What is the capital of Karnataka"
 - **Command**:
 ```bash
 curl -X 'POST' \
-'http://localhost:8000/transcribe/' \
+'http://localhost:7860/transcribe/' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
 -F 'file=@samples/kannada_sample_2.wav;type=audio/x-wav'
@@ -248,7 +248,7 @@ curl -X 'POST' \
 - **Command**:
 ```bash
 curl -X 'POST' \
-'http://localhost:8000/transcribe/' \
+'http://localhost:7860/transcribe/' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
 -F 'file=@samples/kannada_sample_3.wav;type=audio/x-wav'
@@ -261,7 +261,7 @@ curl -X 'POST' \
 - **Command**:
 ```bash
 curl -X 'POST' \
-'http://localhost:8000/transcribe/' \
+'http://localhost:7860/transcribe/' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
 -F 'file=@samples/kannada_sample_4.wav;type=audio/x-wav'
@@ -278,7 +278,7 @@ The `/transcribe_batch` endpoint allows you to transcribe multiple audio files i
 - **Command**:
 ```bash
 curl -X 'POST' \
-'http://localhost:8000/transcribe_batch/' \
+'http://localhost:7860/transcribe_batch/' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
 -F 'files=@samples/kannada_sample_1.wav;type=audio/x-wav' \
@@ -312,7 +312,15 @@ docker run --gpus all -it --rm -p 7860:7860 slabstech/asr_indic_server
 ffmpeg -i sample_audio.wav -ac 1 -ar 16000 sample_audio_infer_ready.wav -y
 ```
 - **Model not found**: Download the required models using the `huggingface-cli download` commands above.
-- **Port conflicts**: Ensure port 8000 is free when running the FastAPI server.
+- **Port conflicts**: Ensure port 7860 is free when running the FastAPI server.
+
+
+## Contributing
+
+We welcome contributions! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines on how to contribute to this project.
+
+Also you can join the [discord group](https://discord.gg/WZMCerEZ2P) to collaborate
+
 
 ## References
 - [AI4Bharat IndicConformerASR GitHub Repository](https://github.com/AI4Bharat/IndicConformerASR)
