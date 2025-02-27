@@ -314,6 +314,14 @@ ffmpeg -i sample_audio.wav -ac 1 -ar 16000 sample_audio_infer_ready.wav -y
 - **Model not found**: Download the required models using the `huggingface-cli download` commands above.
 - **Port conflicts**: Ensure port 7860 is free when running the FastAPI server.
 
+
+## Contributing
+
+We welcome contributions! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines on how to contribute to this project.
+
+Also you can join the [discord group](https://discord.gg/WZMCerEZ2P) to collaborate
+
+
 ## References
 - [AI4Bharat IndicConformerASR GitHub Repository](https://github.com/AI4Bharat/IndicConformerASR)
 - [Nemo - AI4Bharat](https://github.com/AI4Bharat/NeMo)
