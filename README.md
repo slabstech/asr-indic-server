@@ -82,13 +82,10 @@ Watch a quick demo of our project in action! Click the image below to view the v
 
 ### Live Server
 
-We have hosted an Automatic Speech Recognition (ASR) service that can be used to verify the accuracy of audio transcriptions. The service is available in two modes:
+We have hosted an Automatic Speech Recognition (ASR) service that can be used to verify the accuracy of audio transcriptions. 
 
 #### High Latency, Slow System (Available 24/7)
 - **URL**: [High Latency ASR Service](https://huggingface.co/spaces/gaganyatri/asr_indic_server_cpu)
-
-#### Low Latency, Fast System (Available on Request)
-- **URL**: [Low Latency ASR Service](https://huggingface.co/spaces/gaganyatri/asr_indic_server)
 
 ### How to Use the Service
 
@@ -96,7 +93,7 @@ We have hosted an Automatic Speech Recognition (ASR) service that can be used to
 
 You can test the service using `curl` commands. Below are examples for both service modes:
 
-#### High Latency Service
+#### CPU / Available 24/7 - Free, Slow
 
 ```sh curl_high_latency.sh
 curl -X 'POST' \
@@ -105,8 +102,8 @@ curl -X 'POST' \
   -H 'Content-Type: multipart/form-data' \
   -F 'file=@samples/kannada_sample_2.wav;type=audio/x-wav'
 ```
-
-#### Low Latency Service
+<!-- 
+#### GPU / Paused, On-demand, $.05 /hour
 
 ```sh curl_low_latency.sh
 curl -X 'POST' \
@@ -115,6 +112,7 @@ curl -X 'POST' \
   -H 'Content-Type: multipart/form-data' \
   -F 'file=@samples/kannada_sample_2.wav;type=audio/x-wav'
 ```
+-->
 
 2. Via Swagger UI 
 
