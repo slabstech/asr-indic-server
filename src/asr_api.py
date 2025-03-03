@@ -133,7 +133,8 @@ class ASRModelManager:
     def cleanup(audio):
                 # Create a directory to save the chunks
         output_dir = "audio_chunks"
-        shutil.rmtree(output_dir)
+        if os.path.exists(output_dir):
+            shutil.rmtree(output_dir)
 
 app = FastAPI()
 asr_manager = ASRModelManager()
