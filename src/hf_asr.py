@@ -15,4 +15,8 @@ print(ctc_text)
 
 model.cur_decoder = "rnnt"
 rnnt_text = model.transcribe(['kannada_query_infer.wav'], batch_size=1, language_id='kn')[0]
+
+
+print(rnnt_text)
+rnnt_text = model.transcribe(['kannada_query_infer.wav'], batch_size=1, language_id='kn')
 print(rnnt_text)

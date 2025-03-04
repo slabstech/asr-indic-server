@@ -217,11 +217,7 @@ You can evaluate the ASR transcription results using `curl` commands. Below are 
 - **Audio File**: [samples/kannada_sample_1.wav](samples/kannada_sample_1.wav)
 - **Command**:
 ```bash
-curl -X 'POST' \
-'http://localhost:7860/transcribe/' \
--H 'accept: application/json' \
--H 'Content-Type: multipart/form-data' \
--F 'file=@samples/kannada_sample_1.wav;type=audio/x-wav'
+curl -X 'POST' 'http://loca?language=kannada' -H 'accept: application/json'   -H 'Content-Type: multipa'Content-Type  multipart/form-data' -F 'file=@samples/kannada_sample_1.wav;type=audio/x-wav'
 ```
 - **Expected Output**:
 ```ಕರ್ನಾಟಕದ ರಾಜಧಾನಿ ಯಾವುದು```
@@ -232,9 +228,8 @@ Translation: "What is the capital of Karnataka"
 - **Command**:
 ```bash
 curl -X 'POST' \
-'http://localhost:7860/transcribe/' \
--H 'accept: application/json' \
--H 'Content-Type: multipart/form-data' \
+'http://localhost:7860/transcribe/?language=kannada' \
+-H 'accept: application/json'   -H 'Content-Type: multipart/form-data' \
 -F 'file=@samples/kannada_sample_2.wav;type=audio/x-wav'
 ```
 - **Expected Output**:
@@ -246,7 +241,7 @@ curl -X 'POST' \
 - **Command**:
 ```bash
 curl -X 'POST' \
-'http://localhost:7860/transcribe/' \
+'http://localhost:7860/transcribe/language=kannada' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
 -F 'file=@samples/kannada_sample_3.wav;type=audio/x-wav'
@@ -259,7 +254,7 @@ curl -X 'POST' \
 - **Command**:
 ```bash
 curl -X 'POST' \
-'http://localhost:7860/transcribe/' \
+'http://localhost:7860/transcribe/language=kannada' \
 -H 'accept: application/json' \
 -H 'Content-Type: multipart/form-data' \
 -F 'file=@samples/kannada_sample_4.wav;type=audio/x-wav'
