@@ -117,7 +117,7 @@ curl -X 'POST' \
 ## Getting Started - Development
 
 ### For Development (Local)
-- **Prerequisites**: Python 3.6+
+- **Prerequisites**: Python 3.10 (compatibility verified)
 - **Steps**:
   1. **Create a virtual environment**:
   ```bash
