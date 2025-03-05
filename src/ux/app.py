@@ -39,9 +39,8 @@ language_mapping = {
     "Urdu": "urd_Arab"
 }
 
-def get_endpoint(use_gpu, use_localhost, service_type):
-    logging.info(f"Getting endpoint for service: {service_type}, use_gpu: {use_gpu}, use_localhost: {use_localhost}")
-    device_type_ep = "" if use_gpu else "-cpu"
+def get_endpoint(use_localhost, service_type):
+    logging.info(f"Getting endpoint for service: {service_type}, use_localhost: {use_localhost}")
     if use_localhost:
         port_mapping = {
             "asr": 10860,
@@ -53,9 +52,9 @@ def get_endpoint(use_gpu, use_localhost, service_type):
     logging.info(f"Endpoint for {service_type}: {base_url}")
     return base_url
 
-def transcribe_audio(audio_path, use_gpu, use_localhost):
-    logging.info(f"Transcribing audio from {audio_path}, use_gpu: {use_gpu}, use_localhost: {use_localhost}")
-    base_url = get_endpoint(use_gpu, use_localhost, "asr")
+def transcribe_audio(audio_path, use_localhost):
+    logging.info(f"Transcribing audio from {audio_path}, use_localhost: {use_localhost}")
+    base_url = get_endpoint(use_localhost, "asr")
     url = f'{base_url}/transcribe/?language=kannada'
     files = {'file': open(audio_path, 'rb')}
     try:
@@ -75,39 +74,10 @@ def chunk_text(text, chunk_size):
         chunks.append(' '.join(words[i:i + chunk_size]))
     return chunks
 
-def translate_text(transcription, src_lang, tgt_lang, use_gpu=False, use_localhost=False):
-    logging.info(f"Translating text: {transcription}, src_lang: {src_lang}, tgt_lang: {tgt_lang}, use_gpu: {use_gpu}, use_localhost: {use_localhost}")
-    base_url = get_endpoint(use_gpu, use_localhost, "translate")
-    device_type = "cuda" if use_gpu else "cpu"
-    url = f'{base_url}/translate?src_lang={src_lang}&tgt_lang={tgt_lang}&device_type={device_type}'
-    headers = {
-        'accept': 'application/json',
-        'Content-Type': 'application/json'
-    }
-    chunk_size =15
-    chunked_text = chunk_text(transcription, chunk_size=chunk_size)
-
-    data = {
-        "sentences": chunked_text,
-        "src_lang": src_lang,
-        "tgt_lang": tgt_lang
-    }
-    
-    try:
-        response = requests.post(url, headers=headers, data=json.dumps(data))
-        response.raise_for_status()
-        logging.info(f"Translation successful: {response.json()}")
-        translated_texts = response.json().get('translations', [])
-        merged_translated_text = ' '.join(translated_texts)
-        return {'translations': [merged_translated_text]}
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Translation failed: {e}")
-        return {"translations": [""]}
-
 # Create the Gradio interface
-with gr.Blocks(title="Dhwani - Voice to Text Translation") as demo:
-    gr.Markdown("# Voice to Text Translation")
-    gr.Markdown("Record your voice or upload a WAV file and Translate it to your required Indian Language")
+with gr.Blocks(title="Dhwani - Voice to Text Transcription") as demo:
+    gr.Markdown("# Voice to Text Transcription")
+    gr.Markdown("Record your voice or upload a WAV file and Transcript the voice")
 
 
     translate_src_language = gr.Dropdown(
@@ -116,66 +86,38 @@ with gr.Blocks(title="Dhwani - Voice to Text Translation") as demo:
         value="Kannada",
         interactive=False
     )
+    '''
     translate_tgt_language = gr.Dropdown(
         choices=list(language_mapping.keys()),
         label="Target Language",
         value="English"
     )
+    '''
     audio_input = gr.Microphone(type="filepath", label="Record your voice")
     audio_upload = gr.File(type="filepath", file_types=[".wav"], label="Upload WAV file")
     audio_output = gr.Audio(type="filepath", label="Playback", interactive=False)
     transcription_output = gr.Textbox(label="Transcription Result", interactive=False)
 
 
-    use_localhost_checkbox = gr.Checkbox(label="Use Localhost", value=False, interactive=False)
+    use_localhost_checkbox = gr.Checkbox(label="Use Localhost", value=False, interactive=False, visible=False)
     #resubmit_button = gr.Button(value="Resubmit Translation")
 
-    def on_transcription_complete(transcription, src_lang, tgt_lang, use_gpu, use_localhost):
-        src_lang_id = language_mapping[src_lang]
-        tgt_lang_id = language_mapping[tgt_lang]
-        logging.info(f"Transcription complete: {transcription}, src_lang: {src_lang_id}, tgt_lang: {tgt_lang_id}, use_gpu: {use_gpu}, use_localhost: {use_localhost}")
-        translation = translate_text(transcription, src_lang_id, tgt_lang_id, use_gpu, use_localhost)
-        translated_text = translation['translations'][0]
-        return translated_text
-
-    def process_audio(audio_path, use_gpu, use_localhost):
-        logging.info(f"Processing audio from {audio_path}, use_gpu: {use_gpu}, use_localhost: {use_localhost}")
-        transcription = transcribe_audio(audio_path, use_gpu, use_localhost)
+    def process_audio(audio_path, use_localhost):
+        logging.info(f"Processing audio from {audio_path}, use_localhost: {use_localhost}")
+        transcription = transcribe_audio(audio_path, use_localhost)
         return transcription
-
-    def reload_endpoint_info(use_gpu, use_localhost):
-        logging.info(f"Reloading endpoint info, use_gpu: {use_gpu}, use_localhost: {use_localhost}")
-        # This function can be used to reload or reconfigure endpoints if needed
-        return
 
     audio_input.stop_recording(
         fn=process_audio,
-        inputs=[audio_input, use_gpu_checkbox, use_localhost_checkbox],
+        inputs=[audio_input,use_localhost_checkbox],
         outputs=transcription_output
     )
 
     audio_upload.upload(
         fn=process_audio,
-        inputs=[audio_upload, use_gpu_checkbox, use_localhost_checkbox],
+        inputs=[audio_upload, use_localhost_checkbox],
         outputs=transcription_output
     )
 
-    transcription_output.change(
-        fn=on_transcription_complete,
-        inputs=[transcription_output, translate_src_language, translate_tgt_language, use_gpu_checkbox, use_localhost_checkbox],
-        outputs=translation_output
-    )
-
-    translate_tgt_language.change(
-        fn=reload_endpoint_info,
-        inputs=[use_gpu_checkbox, use_localhost_checkbox]
-    )
-'''
-    resubmit_button.click(
-        fn=on_transcription_complete,
-        inputs=[transcription_output, translate_src_language, translate_tgt_language, use_gpu_checkbox, use_localhost_checkbox],
-        outputs=translation_output
-    )
-'''
 # Launch the interface
 demo.launch()
