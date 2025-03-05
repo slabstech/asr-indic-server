@@ -84,29 +84,10 @@ Watch a quick demo of our project in action! Click the image below to view the v
 
 We have hosted an Automatic Speech Recognition (ASR) service that can be used to verify the accuracy of audio transcriptions. 
 
-#### High Latency, Slow System (Available 24/7)
-- **URL**: [High Latency ASR Service](https://huggingface.co/spaces/gaganyatri/asr_indic_server_cpu)
+#### 
+- [CPU - API Endpoint](https://huggingface.co/spaces/gaganyatri/asr_indic_server_cpu)
 
-### How to Use the Service
-
-1. With curl
-
-You can test the service using `curl` commands. Below are examples for both service modes:
-
-#### CPU / Available 24/7 - Free, Slow
-
-```sh curl_high_latency.sh
-curl -X 'POST' \
-  'https://gaganyatri-asr-indic-server-cpu.hf.space/transcribe/?language=kannada' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: multipart/form-data' \
-  -F 'file=@samples/kannada_sample_2.wav;type=audio/x-wav'
-```
-
-
-2. Via Gradio UI 
-
-- **URL**: [CPU based ASR](https://huggingface.co/spaces/gaganyatri/asr_indic_server_cpu)
+- [Via Gradio UI](https://huggingface.co/spaces/gaganyatri/asr_indic_app_gradio)
 
 ### Notes
 
@@ -162,7 +143,16 @@ huggingface-cli download ai4bharat/indicconformer_stt_ml_hybrid_rnnt_large
 huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_rnnt_large
 ```
 
-## Running with FastAPI Server
+
+### For Local Development
+We will use Gradio 
+```bash
+python src/ux/app_local.py
+```
+
+### For Server Development
+
+#### Running with FastAPI Server
 Run the server using FastAPI with the desired language (e.g., Kannada):
 - for GPU
   ```bash
