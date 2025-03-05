@@ -102,23 +102,11 @@ curl -X 'POST' \
   -H 'Content-Type: multipart/form-data' \
   -F 'file=@samples/kannada_sample_2.wav;type=audio/x-wav'
 ```
-<!-- 
-#### GPU / Paused, On-demand, $.05 /hour
 
-```sh curl_low_latency.sh
-curl -X 'POST' \
-  'https://gaganyatri-asr-indic-server.hf.space/transcribe/?language=kannada' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: multipart/form-data' \
-  -F 'file=@samples/kannada_sample_2.wav;type=audio/x-wav'
-```
--->
 
-2. Via Swagger UI 
+2. Via Gradio UI 
 
-- **URL**: [High Latency ASR Service](https://huggingface.co/spaces/gaganyatri/asr_indic_server_cpu)
-
-- **URL**: [Low Latency ASR Service](https://huggingface.co/spaces/gaganyatri/asr_indic_server_cpu)
+- **URL**: [CPU based ASR](https://huggingface.co/spaces/gaganyatri/asr_indic_server_cpu)
 
 ### Notes
 
@@ -127,29 +115,6 @@ curl -X 'POST' \
 - The service expects the audio file to be in WAV format.
 
 ## Getting Started - Development
-
-### For Production (Docker)
-- **Prerequisites**: Docker and Docker Compose
-- **Steps**:
-  1. **Start the server**:
-  For GPU
-  ```bash
-  docker compose -f compose.yaml up -d
-  ```
-  For CPU only
-  ```bash
-  docker compose -f cpu-compose.yaml up -d
-  ```
-  2. **Update source and target languages**:
-  Modify the `compose.yaml` file to set the desired language. Example configurations:
-  - **Kannada**:
-  ```yaml
-  language: kn
-  ```
-  - **Hindi**:
-  ```yaml
-  language: hi
-  ```
 
 ### For Development (Local)
 - **Prerequisites**: Python 3.6+
@@ -185,6 +150,7 @@ huggingface-cli download ai4bharat/indicconformer_stt_kn_hybrid_rnnt_large
 ```
 
 ### Other Languages
+- [ASR  - IndicConformer Collection on HuggingFace](https://huggingface.co/collections/ai4bharat/indicconformer-66d9e933a243cba4b679cb7f)
 
 #### Malayalam
 ```bash
@@ -343,3 +309,39 @@ python hf_asr.py
 
 
 - server-setup.sh - Use for container deployment on OlaKrutrim AI Pod
+
+<!-- 
+### For Production (Docker)
+- **Prerequisites**: Docker and Docker Compose
+- **Steps**:
+  1. **Start the server**:
+  For GPU
+  ```bash
+  docker compose -f compose.yaml up -d
+  ```
+  For CPU only
+  ```bash
+  docker compose -f cpu-compose.yaml up -d
+  ```
+  2. **Update source and target languages**:
+  Modify the `compose.yaml` file to set the desired language. Example configurations:
+  - **Kannada**:
+  ```yaml
+  language: kn
+  ```
+  - **Hindi**:
+  ```yaml
+  language: hi
+  ```
+-->
+<!-- 
+#### GPU / Paused, On-demand, $.05 /hour
+
+```sh curl_low_latency.sh
+curl -X 'POST' \
+  'https://gaganyatri-asr-indic-server.hf.space/transcribe/?language=kannada' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'file=@samples/kannada_sample_2.wav;type=audio/x-wav'
+```
+-->
