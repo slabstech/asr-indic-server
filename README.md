@@ -113,13 +113,8 @@ We have hosted an Automatic Speech Recognition (ASR) service that can be used to
   venv\Scripts\activate
   ```
   3. **Install dependencies**:
-  - For GPU
       ```bash
       pip install -r requirements.txt
-      ```
-  - For CPU only
-      ```
-      pip install -r cpu-requirements.txt
       ```
 
 ## Downloading Translation Models
@@ -144,13 +139,39 @@ huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_rnnt_large
 ```
 
 
-### For Local Development
-We will use Gradio 
+### Sample Code
+```python
+import torch
+import nemo.collections.asr as nemo_asr
+
+model = nemo_asr.models.ASRModel.from_pretrained("ai4bharat/indicconformer_stt_kn_hybrid_rnnt_large")
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.freeze() # inference mode
+model = model.to(device)
+
+model.cur_decoder = "rnnt"
+rnnt_text = model.transcribe(['samples/kannada_sample_1.wav'], batch_size=1, language_id='kn')[0]
+
+
+print(rnnt_text)
+```
+
+- Run the Code
+  ```bash
+  python asr_code.py
+  ```
+
+
+### Alternative examples for Development
+
+#### For Local Development
+-  Gradio 
 ```bash
 python src/ux/app_local.py
 ```
 
-### For Server Development
+#### For Server Development
 
 #### Running with FastAPI Server
 Run the server using FastAPI with the desired language (e.g., Kannada):
@@ -163,10 +184,8 @@ Run the server using FastAPI with the desired language (e.g., Kannada):
   python src/asr_api.py --port 7860 --language kn --host 0.0.0.0 --device cpu
   ```
 
-## Evaluating Results
-You can evaluate the ASR transcription results using `curl` commands. Below are examples for Kannada audio samples.
-**Note**: GitHub doesn’t support audio playback in READMEs. Download the sample audio files and test them locally with the provided `curl` commands to verify transcription results.
-
+#### Evaluating Results for FastApi Server
+You can evaluate the ASR transcription results using `curl` commands. 
 ### Kannada Transcription Examples
 
 #### Sample 1: kannada_sample_1.wav
@@ -219,9 +238,9 @@ curl -X 'POST' \
 
 **Note**: The ASR does not provide sentence breaks or punctuation (e.g., question marks). We plan to integrate an LLM parser for improved context in future updates.
 
-## Batch Transcription Examples
+### Batch Transcription Examples
 
-### Transcribe Batch Endpoint
+#### Transcribe Batch Endpoint
 The `/transcribe_batch` endpoint allows you to transcribe multiple audio files in a single request. This is useful for batch processing of audio files.
 
 - **Command**:
@@ -243,19 +262,7 @@ curl -X 'POST' \
 }
 ```
 
-## Building Docker Image
-Build the Docker image locally:
-```bash
-docker build -t slabstech/asr_indic_server -f Dockerfile .
-```
-
-### Run the Docker Image
-```
-docker run --gpus all -it --rm -p 7860:7860 slabstech/asr_indic_server
-```
-
 ## Troubleshooting
-- **Docker fails to start**: Ensure Docker is running and the `compose.yaml` file is correctly formatted.
 - **Transcription errors**: Verify the audio file is in WAV format, mono, and sampled at 16kHz. Adjust using:
 ```bash
 ffmpeg -i sample_audio.wav -ac 1 -ar 16000 sample_audio_infer_ready.wav -y
@@ -276,9 +283,9 @@ Also you can join the [discord group](https://discord.gg/WZMCerEZ2P) to collabor
 - [Nemo - AI4Bharat](https://github.com/AI4Bharat/NeMo)
 - [IndicConformer Collection on HuggingFace](https://huggingface.co/collections/ai4bharat/indicconformer-66d9e933a243cba4b679cb7f)
 
-## Additional Resources
+### Additional methods for Development
 
-### Running Nemo Model
+#### Running Nemo Model
 1. Download the Nemo model:
 ```bash
 wget https://objectstore.e2enetworks.net/indic-asr-public/indicConformer/ai4b_indicConformer_kn.nemo -O kannada.nemo
@@ -292,13 +299,26 @@ ffmpeg -i sample_audio.wav -ac 1 -ar 16000 sample_audio_infer_ready.wav -y
 python nemo_asr.py
 ```
 
-### Running with Transformers
-```bash
-python hf_asr.py
-```
+
+<!-- 
 
 
 - server-setup.sh - Use for container deployment on OlaKrutrim AI Pod
+#### Building Docker Image
+Build the Docker image locally:
+```bash
+docker build -t slabstech/asr_indic_server -f Dockerfile .
+```
+
+### Run the Docker Image
+```
+docker run --gpus all -it --rm -p 7860:7860 slabstech/asr_indic_server
+```
+- **Docker fails to start**: Ensure Docker is running and the `compose.yaml` file is correctly formatted.
+
+-->
+
+
 
 <!-- 
 ### For Production (Docker)
