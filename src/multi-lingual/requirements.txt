@@ -3,3 +3,7 @@ torchaudio
 onnx
 onnxruntime
 onnxruntime-gpu
+uvicorn
+fastapi
+pydub
+python-multipart
