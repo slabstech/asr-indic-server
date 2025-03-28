@@ -1,0 +1,5 @@
+transformers
+torchaudio
+onnx
+onnxruntime
+onnxruntime-gpu
