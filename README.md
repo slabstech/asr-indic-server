@@ -116,30 +116,74 @@ We have hosted an Automatic Speech Recognition (ASR) service that can be used to
       ```bash
       pip install -r requirements.txt
       ```
+      - ### For Individual language models
+        ```bash
+        pip install -r nemo-requirements.txt
+        ``` 
 
 ## Downloading Translation Models
 Models can be downloaded from AI4Bharat's HuggingFace repository:
 
-### Kannada
+### For Multi-lingual language supported model
 ```bash
-huggingface-cli download ai4bharat/indicconformer_stt_kn_hybrid_rnnt_large
+huggingface-cli download ai4bharat/indic-conformer-600m-multilingual
 ```
+
+### For Individual langauge models 
+-  Kannada
+  ```bash
+  huggingface-cli download ai4bharat/indicconformer_stt_kn_hybrid_rnnt_large
+  ```
 
 ### Other Languages
 - [ASR  - IndicConformer Collection on HuggingFace](https://huggingface.co/collections/ai4bharat/indicconformer-66d9e933a243cba4b679cb7f)
 
-#### Malayalam
-```bash
-huggingface-cli download ai4bharat/indicconformer_stt_ml_hybrid_rnnt_large
-```
+  - Malayalam
+  ```bash
+  huggingface-cli download ai4bharat/indicconformer_stt_ml_hybrid_rnnt_large
+  ```
 
-#### Hindi
-```bash
-huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_rnnt_large
-```
+  - Hindi
+  ```bash
+  huggingface-cli download ai4bharat/indicconformer_stt_hi_hybrid_rnnt_large
+  ```
 
 
 ### Sample Code
+### For all languages
+```python
+from transformers import AutoModel
+import torchaudio
+import torch
+
+# Load the model
+model = AutoModel.from_pretrained("ai4bharat/indic-conformer-600m-multilingual", trust_remote_code=True)
+
+# Load an audio file
+wav, sr = torchaudio.load("kannada_sample_1.wav")
+wav = torch.mean(wav, dim=0, keepdim=True)
+
+target_sample_rate = 16000  # Expected sample rate
+if sr != target_sample_rate:
+    resampler = torchaudio.transforms.Resample(orig_freq=sr, new_freq=target_sample_rate)
+    wav = resampler(wav)
+
+# Perform ASR with CTC decoding
+transcription_ctc = model(wav, "kn", "ctc")
+print("CTC Transcription:", transcription_ctc)
+
+# Perform ASR with RNNT decoding
+transcription_rnnt = model(wav, "kn", "rnnt")
+print("RNNT Transcription:", transcription_rnnt)
+
+```
+
+- Run the Code
+  ```bash
+  python asr-multi-lingual.py
+  ```
+
+### Individual Languages
 ```python
 import torch
 import nemo.collections.asr as nemo_asr
@@ -156,6 +200,7 @@ rnnt_text = model.transcribe(['samples/kannada_sample_1.wav'], batch_size=1, lan
 
 print(rnnt_text)
 ```
+
 
 - Run the Code
   ```bash
@@ -177,11 +222,11 @@ python src/ux/app_local.py
 Run the server using FastAPI with the desired language (e.g., Kannada):
 - for GPU
   ```bash
-  python src/asr_api.py --port 7860 --language kn --host 0.0.0.0 --device gpu
+  python src/multi-lingual/asr_api.py --port 7860 --language kn --host 0.0.0.0 --device gpu
   ```
 - for CPU only
   ```bash
-  python src/asr_api.py --port 7860 --language kn --host 0.0.0.0 --device cpu
+  python src/multi-lingual/asr_api.py --port 7860 --language kn --host 0.0.0.0 --device cpu
   ```
 
 #### Evaluating Results for FastApi Server
