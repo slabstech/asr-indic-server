@@ -1,0 +1,3 @@
+torch
+nemo_toolkit @ git+https://github.com/AI4Bharat/NeMo@0a1560e398ee97dd3ff17b495d05cad31938cef0
+hydra
