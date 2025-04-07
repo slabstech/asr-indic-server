@@ -14,3 +14,17 @@ onnx_export_path = "indicconformer.onnx"
 model.export(onnx_export_path)
 print(f"Model has been exported to ONNX format at: {onnx_export_path}")
 
+# ctc model
+'''
+with open('tokens.txt', 'w') as f:
+  for i, s in enumerate(model.decoder.vocabulary):
+    f.write(f"{s} {i}\n")
+  f.write(f"<blk> {i+1}\n")
+'''
+
+#rnnt
+tokens = model.cfg.labels
+with open('tokens.txt', 'w') as f:
+    for i, s in enumerate(tokens):
+        f.write(f"{s} {i}\n")
+    f.write(f"<blk> {len(tokens)}\n")
