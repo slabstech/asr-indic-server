@@ -1,16 +1,36 @@
-import torch
-import nemo.collections.asr as nemo_asr
 
-# Step 1: Load the pretrained NeMo ASR model
-model = nemo_asr.models.ASRModel.from_pretrained("ai4bharat/indicconformer_stt_kn_hybrid_rnnt_large")
 
-# Step 2: Prepare the model for inference
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model.freeze()  # Set the model to inference mode
-model = model.to(device)
+import onnxruntime as ort
+import numpy as np
+import soundfile as sf
 
-# Step 3: Export the model to ONNX format
-onnx_export_path = "indicconformer.onnx"
-model.export(onnx_export_path)
-print(f"Model has been exported to ONNX format at: {onnx_export_path}")
+# Step 1: Load the ONNX model
+onnx_model_path = "indicconformer.onnx"
+session = ort.InferenceSession(onnx_model_path)
 
+# Step 2: Preprocess the audio file
+def preprocess_audio(audio_path, target_sr=16000):
+    audio, sr = sf.read(audio_path, dtype="float32")
+    if sr != target_sr:
+        raise ValueError(f"Audio sample rate must be {target_sr} Hz. Current sample rate: {sr}")
+    return np.expand_dims(audio, axis=0)  # Add batch dimension
+
+audio_file = "samples/kannada_sample_1.wav"
+audio_data = preprocess_audio(audio_file)
+
+# Step 3: Perform inference
+input_name = session.get_inputs()[0].name
+output_name = session.get_outputs()[0].name
+
+# Pass the audio data to the model
+outputs = session.run([output_name], {input_name: audio_data})[0]
+
+# Step 4: Decode the results (assuming token IDs are mapped to text)
+def decode_output(output_ids, vocabulary):
+    return "".join([vocabulary[id] for id in output_ids if id < len(vocabulary)])
+
+# Example vocabulary mapping (replace with actual tokens.txt content)
+vocabulary = ["a", "b", "c", "<space>", "<blk>"]  # Example tokens; replace with your model's tokens.txt
+
+transcribed_text = decode_output(outputs[0], vocabulary)
+print(f"Transcribed text: {transcribed_text}")
