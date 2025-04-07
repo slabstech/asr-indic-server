@@ -5,10 +5,11 @@ __pycache__/
 venv_new/
 NeMo/
 asr_venv
+venv_onnx/
 *.nemo
 # C extensions
 *.so
-
+*.onnx
 # Distribution / packaging
 .Python
 build/

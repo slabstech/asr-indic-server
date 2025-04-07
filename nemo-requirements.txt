@@ -1,3 +1,17 @@
 torch
 nemo_toolkit @ git+https://github.com/AI4Bharat/NeMo@0a1560e398ee97dd3ff17b495d05cad31938cef0
-hydra
+hydra-core
+pytorch_lightning
+librosa
+transformers==4.45.0
+sentencepiece
+huggingface_hub==0.23.2
+pandas
+lhotse
+editdistance
+jiwer
+pyannote.audio
+webdataset
+datasets==3.1.0
+IPython
+numpy==1.26.4
