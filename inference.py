@@ -48,19 +48,28 @@ class RNNTDecoder:
         self.vocab_size = vocab_size
         self.enc_dim = enc_dim
         self.pred_dim = pred_dim
+        self.num_layers = num_layers
         self.blank_id = blank_id
         self.max_symbols = max_symbols
         
         # Prediction network (LSTM)
         self.pred_rnn = nn.LSTM(input_size=vocab_size, hidden_size=pred_dim, num_layers=num_layers, batch_first=True)
-        # Random weights for now (replace with trained weights if available)
+        # Joint network
         self.joint_fc = nn.Linear(enc_dim + pred_dim, vocab_size)
+        
+        # Load trained weights
+        try:
+            self.pred_rnn.load_state_dict(torch.load("decoder_weights.pt"))
+            self.joint_fc.load_state_dict(torch.load("joint_weights.pt"))
+            print("Loaded trained weights for decoder and joint network")
+        except FileNotFoundError as e:
+            print(f"Error: Weight files not found. Please run export_weights.py first. {str(e)}")
+            raise
         
         # For numpy conversion
         self.to_numpy = lambda x: x.detach().cpu().numpy()
 
     def predict(self, token_id, states):
-        # Convert token ID to one-hot or embedding
         input_tensor = torch.zeros(1, 1, self.vocab_size, dtype=torch.float32)
         if token_id is not None:
             input_tensor[0, 0, token_id] = 1.0  # One-hot encoding
@@ -70,10 +79,9 @@ class RNNTDecoder:
         return self.to_numpy(output[0, 0]), (self.to_numpy(h), self.to_numpy(c))
 
     def joint(self, enc_output, pred_output):
-        # Combine encoder and prediction outputs
         enc_tensor = torch.tensor(enc_output, dtype=torch.float32).unsqueeze(0)  # [1, 512]
-        pred_tensor = torch.tensor(pred_output, dtype=torch.float32).unsqueeze(0)  # [1, 640]
-        combined = torch.cat([enc_tensor, pred_tensor], dim=-1)  # [1, 1152]
+        pred_tensor = torch.tensor(pred_output, dtype=torch.float32).unsqueeze(0)  # [1, pred_dim]
+        combined = torch.cat([enc_tensor, pred_tensor], dim=-1)  # [1, 512 + pred_dim]
         with torch.no_grad():
             logits = self.joint_fc(combined)  # [1, vocab_size]
         return self.to_numpy(logits[0])  # [vocab_size]
@@ -108,7 +116,7 @@ class RNNTInference:
         print(f"enc_output shape: {enc_output.shape}, Length: {enc_length}")
         
         transcription = []
-        hyp = [self.decoder.blank_id]  # Start with SOS (using blank_id as placeholder)
+        hyp = [self.decoder.blank_id]  # Start with blank_id as SOS
         states = (np.zeros((self.decoder.num_layers, 1, self.decoder.pred_dim), dtype=np.float32),
                   np.zeros((self.decoder.num_layers, 1, self.decoder.pred_dim), dtype=np.float32))
         
@@ -142,7 +150,16 @@ def main():
     tokens_path = "tokens.txt"
     audio_path = "samples/kannada_sample_1.wav"
     
-    transcriber = RNNTInference(encoder_path, tokens_path)
+    # Initialize with parameters matching NeMo config (adjustable after export output)
+    transcriber = RNNTInference(
+        encoder_path=encoder_path,
+        tokens_path=tokens_path,
+        vocab_size=5633,
+        enc_dim=512,  # From encoder output
+        pred_dim=640,  # Default, adjust based on decoder config
+        num_layers=2,  # Default, adjust based on decoder config
+        blank_id=5632  # From tokens.txt
+    )
     try:
         transcription = transcriber.transcribe(audio_path)
         print("Transcription:", transcription)

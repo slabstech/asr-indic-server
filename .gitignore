@@ -7,6 +7,7 @@ NeMo/
 asr_venv
 venv_onnx/
 *.nemo
+*.pt
 # C extensions
 *.so
 *.onnx
