@@ -1,0 +1,4 @@
+onnx
+onnxruntime
+onnxruntime-gpu
+soundfile
